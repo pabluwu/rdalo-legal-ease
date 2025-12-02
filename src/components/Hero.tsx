@@ -4,7 +4,7 @@ import { MessageCircle, Calendar } from "lucide-react";
 
 const Hero = () => {
   const openWhatsApp = () => {
-    window.open("https://wa.me/56912345678?text=Hola,%20necesito%20asesoría%20legal", "_blank");
+    window.open("https://wa.me/56990538001?text=Hola,%20necesito%20asesoría%20legal", "_blank");
   };
 
   const scrollToContact = () => {
@@ -24,9 +24,9 @@ const Hero = () => {
           </span>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
-            Abogada de Familia{" "}
+            
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              100% Online
+              Acuérdalo
             </span>
           </h1>
           

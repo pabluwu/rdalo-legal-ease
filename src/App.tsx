@@ -25,7 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/documentos" element={<Documentos />} />
+          {/* <Route path="/documentos" element={<Documentos />} />
           <Route path="/servicios/pension-alimentos" element={<PensionAlimentos />} />
           <Route path="/servicios/aumento-pension" element={<AumentoPension />} />
           <Route path="/servicios/rebaja-pension" element={<RebajaPension />} />
@@ -33,7 +33,7 @@ const App = () => (
           <Route path="/servicios/cuidado-personal" element={<CuidadoPersonal />} />
           <Route path="/servicios/divorcio" element={<Divorcio />} />
           <Route path="/servicios/cobro-deuda" element={<CobroDeuda />} />
-          <Route path="/servicios/acuerdos" element={<Acuerdos />} />
+          <Route path="/servicios/acuerdos" element={<Acuerdos />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

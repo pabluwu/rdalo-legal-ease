@@ -33,8 +33,7 @@ const pricingItems = [
     description: "Soluciones extrajudiciales",
     features: [
       "Redacción de acuerdos",
-      "Mediación familiar",
-      "Trámites notariales",
+      "Redacción de escritos civiles / extrajudicial",
       "Permisos de viaje",
     ],
     highlighted: false,
@@ -44,7 +43,7 @@ const pricingItems = [
 const paymentOptions = [
   "Pago en cuotas sin interés",
   "Pago por etapas del proceso",
-  "Transferencia o tarjeta",
+  "Transferencia bancaria",
 ];
 
 const Pricing = () => {

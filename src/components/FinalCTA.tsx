@@ -81,7 +81,7 @@ const FinalCTA = () => {
   };
 
   const openWhatsApp = () => {
-    window.open("https://wa.me/56912345678?text=Hola,%20necesito%20asesoría%20legal", "_blank");
+    window.open("https://wa.me/56990538001?text=Hola,%20necesito%20asesoría%20legal", "_blank");
   };
 
   return (

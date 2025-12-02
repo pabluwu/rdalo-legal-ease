@@ -34,7 +34,7 @@ const services = [
   },
   {
     icon: Users,
-    title: "Régimen de Visitas",
+    title: "Relación directa y regular (Visitas)",
     description: "Establece o modifica las visitas",
     href: "/servicios/visitas",
   },
@@ -52,7 +52,7 @@ const services = [
   },
   {
     icon: Scale,
-    title: "Cobro de Deuda",
+    title: "Cobro de Deuda de Pensión de Alimentos",
     description: "Recupera pensiones impagas",
     href: "/servicios/cobro-deuda",
   },
@@ -92,7 +92,7 @@ const Services = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
             >
-              <Link to={service.href}>
+              {/* <Link to={service.href}> */}
                 <Card className="border-border bg-card hover:shadow-soft hover:border-primary/30 transition-all duration-300 h-full group cursor-pointer">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 mb-4 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -104,12 +104,12 @@ const Services = () => {
                     <p className="text-sm text-muted-foreground font-light mb-3">
                       {service.description}
                     </p>
-                    <span className="inline-flex items-center text-sm text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* <span className="inline-flex items-center text-sm text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                       Ver más <ArrowRight className="ml-1 h-4 w-4" />
-                    </span>
+                    </span> */}
                   </CardContent>
                 </Card>
-              </Link>
+              {/* </Link> */}
             </motion.div>
           ))}
         </div>

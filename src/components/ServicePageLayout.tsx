@@ -13,7 +13,7 @@ interface ServicePageLayoutProps {
 
 const ServicePageLayout = ({ title, subtitle, icon, children }: ServicePageLayoutProps) => {
   const openWhatsApp = () => {
-    window.open(`https://wa.me/56912345678?text=Hola,%20necesito%20información%20sobre%20${encodeURIComponent(title)}`, "_blank");
+    window.open(`https://wa.me/56990538001?text=Hola,%20necesito%20información%20sobre%20${encodeURIComponent(title)}`, "_blank");
   };
 
   return (
