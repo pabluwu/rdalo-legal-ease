@@ -67,10 +67,8 @@ const HowWeWork = () => {
         </motion.div>
 
         <div className="relative">
-          {/* Connection line - hidden on mobile */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 -translate-y-1/2" />
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-6">
             {steps.map((step, index) => (
               <motion.div
                 key={step.title}
@@ -80,28 +78,35 @@ const HowWeWork = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative"
               >
-                <div className="flex flex-col items-center text-center">
-                  {/* Step number */}
-                  <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center z-10">
+                <div className="flex flex-col items-center text-center bg-card/50 rounded-2xl p-4 border border-border/30 h-full">
+                  {/* Step number badge - integrated at top */}
+                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center mb-3">
                     {index + 1}
                   </div>
                   
                   {/* Icon container */}
                   <motion.div
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-4 shadow-lg`}
+                    whileHover={{ scale: 1.1 }}
+                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-3 shadow-md`}
                   >
-                    <step.icon className="h-8 w-8 text-white" />
+                    <step.icon className="h-7 w-7 text-white" />
                   </motion.div>
                   
                   {/* Content */}
-                  <h3 className="text-base font-semibold text-foreground mb-1">
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground font-light">
+                  <p className="text-xs text-muted-foreground font-light leading-relaxed">
                     {step.description}
                   </p>
                 </div>
+                
+                {/* Arrow connector - only on desktop, not on last item */}
+                {index < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 text-primary/40 z-10">
+                    →
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
