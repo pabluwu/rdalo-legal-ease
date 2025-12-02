@@ -30,7 +30,7 @@ const steps = [
   {
     icon: PenTool,
     title: "Firmas electrónicamente",
-    description: "Sin necesidad de ir a ningún lugar",
+    description: "Nos esforzaremos porque puedas cumplir con la mayoría de trámites de manera remota.",
     color: "from-orange-400 to-orange-600",
   },
   {
@@ -42,7 +42,7 @@ const steps = [
   {
     icon: BarChart3,
     title: "Reporte semanal",
-    description: "Seguimiento en tu intranet personal",
+    description: "Seguimiento continuo de tu caso",
     color: "from-teal-400 to-teal-600",
   },
 ];

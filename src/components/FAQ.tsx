@@ -49,14 +49,26 @@ const faqs = [
     answer: (
       <>
         <p>
-          Si no te permiten{" "}
-          <strong>ver a tu hijo o ejercer tu derecho de visitas</strong>, lo
-          primero es <strong>dejar constancia del impedimento</strong>. Con esa
-          evidencia, podemos presentar una{" "}
-          <strong>demanda de relación directa y regular (visitas)</strong> ante
-          el Tribunal de Familia para restablecer tus derechos y fijar un
-          régimen claro de visitas.
+          Si no te permiten ver a tu hijo, el procedimiento dependerá de si las
+          visitas están o no reguladas. 
+          
         </p>
+        <br />
+        <ul className="list-disc list-outside space-y-4 ml-5">
+          <li className="pl-2">
+            <strong>Si las visitas están reguladas</strong> (por conciliación o
+            sentencia): se debe dejar constancia del impedimento y luego iniciar
+            una mediación. Si no hay acuerdo, se puede presentar una demanda de
+            modificación de relación directa y regular para ajustar o reforzar
+            el régimen de visitas.
+          </li>
+          <li className="pl-2">
+            <strong>Si las visitas no están reguladas</strong>: se debe comenzar
+            con la mediación obligatoria y, si esta se frustra, presentar una
+            demanda de relación directa y regular para establecer formalmente el
+            régimen de visitas.
+          </li>
+        </ul>
       </>
     ),
   },
@@ -86,47 +98,29 @@ const faqs = [
           En Chile, el <strong>divorcio</strong> puede tramitarse de tres
           maneras:
           <strong>unilateral</strong>, <strong>de común acuerdo</strong> o
-          <strong>por culpa</strong> (también llamado <em>divorcio sanción</em>
+          <strong> por culpa</strong> (también llamado <em>divorcio sanción</em>
           ).
         </p>
         <br />
         <ul className="list-disc list-outside space-y-4 ml-5">
           <li className="pl-2">
-            <strong>Divorcio unilateral:</strong>
+            <strong>Divorcio unilateral: </strong>
             requiere <strong>3 años de cese de convivencia</strong> debidamente
             notificado.
           </li>
           <li className="pl-2">
-            <strong>Divorcio de mutuo acuerdo:</strong>
-            requiere <strong>1 año de cese de convivencia</strong> y la
-            presentación del
+            <strong>Divorcio de mutuo acuerdo: </strong>
+            requiere <strong>1 año de cese de convivencia</strong> debidamente
+            notificada, y la presentación del
             <strong>acuerdo completo y suficiente</strong>, especialmente si hay
             hijos menores.
           </li>
           <li className="pl-2">
-            <strong>Divorcio por culpa:</strong>
+            <strong>Divorcio por culpa: </strong>
             procede cuando uno de los cónyuges incumple gravemente sus
             obligaciones matrimoniales (por ejemplo, en casos de violencia
             intrafamiliar). <strong>No exige plazo mínimo</strong> de
             separación.
-          </li>
-        </ul>
-        <br />
-
-        <p>
-          <strong>Prueba del cese de convivencia:</strong>
-        </p>
-        <br />
-        <ul className="list-disc list-outside space-y-4 ml-5">
-          <li className="pl-2">
-            <strong>Casados antes de 2004:</strong>
-            existe libertad probatoria, pudiendo acreditarse con{" "}
-            <strong>dos testigos</strong>.
-          </li>
-          <li className="pl-2">
-            <strong>Casados después de 2004:</strong>
-            el cese debe probarse mediante su{" "}
-            <strong>notificación formal</strong>.
           </li>
         </ul>
       </>
