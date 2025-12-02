@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,14 +35,48 @@ const ContactForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Aquí se puede integrar con un servicio de email o backend
-    console.log("Form submitted:", values);
-    toast({
-      title: "¡Mensaje enviado!",
-      description: "Nos pondremos en contacto contigo pronto.",
-    });
-    form.reset();
+  const sendContactMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const response = await fetch("https://api.acuerdalo.cl/api/contacto", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          nombre: values.name,
+          correo: values.email,
+          telefono: values.phone,
+          mensaje: values.message,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
+        throw new Error(errorText || "No se pudo enviar el mensaje. Intenta nuevamente.");
+      }
+
+      return response.json().catch(() => null);
+    },
+    onSuccess: () => {
+      toast({
+        title: "¡Mensaje enviado!",
+        description: "Nos pondremos en contacto contigo pronto.",
+      });
+      form.reset();
+    },
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : "No se pudo enviar el mensaje. Intenta nuevamente.";
+      toast({
+        title: "No pudimos enviar tu mensaje",
+        description: message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await sendContactMutation.mutateAsync(values);
   };
 
   return (
@@ -147,8 +182,9 @@ const ContactForm = () => {
               <Button 
                 type="submit" 
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-soft rounded-full py-6 text-lg font-medium transition-all hover:scale-105"
+                disabled={sendContactMutation.isPending}
               >
-                Enviar mensaje
+                {sendContactMutation.isPending ? "Enviando..." : "Enviar mensaje"}
               </Button>
             </form>
           </Form>
