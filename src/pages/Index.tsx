@@ -1,7 +1,9 @@
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import About from "@/components/About";
-import ContactForm from "@/components/ContactForm";
+import Pricing from "@/components/Pricing";
+import FAQ from "@/components/FAQ";
+import HowWeWork from "@/components/HowWeWork";
+import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -9,8 +11,10 @@ const Index = () => {
     <main className="min-h-screen bg-background font-outfit">
       <Hero />
       <Services />
-      <About />
-      <ContactForm />
+      <Pricing />
+      <FAQ />
+      <HowWeWork />
+      <FinalCTA />
       <Footer />
     </main>
   );
