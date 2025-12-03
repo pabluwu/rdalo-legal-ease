@@ -115,13 +115,13 @@ const faqs = [
             <strong>acuerdo completo y suficiente</strong>, especialmente si hay
             hijos menores.
           </li>
-          <li className="pl-2">
+          {/* <li className="pl-2">
             <strong>Divorcio por culpa: </strong>
             procede cuando uno de los cónyuges incumple gravemente sus
             obligaciones matrimoniales (por ejemplo, en casos de violencia
             intrafamiliar). <strong>No exige plazo mínimo</strong> de
             separación.
-          </li>
+          </li> */}
         </ul>
       </>
     ),
