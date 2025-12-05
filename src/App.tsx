@@ -14,6 +14,7 @@ import CuidadoPersonal from "./pages/servicios/CuidadoPersonal";
 import Divorcio from "./pages/servicios/Divorcio";
 import CobroDeuda from "./pages/servicios/CobroDeuda";
 import Acuerdos from "./pages/servicios/Acuerdos";
+import CalculadoraPension from "./pages/CalculadoraPension";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
         <GtmPageViewListener />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/calculadora-pension" element={<CalculadoraPension />} />
           {/* <Route path="/documentos" element={<Documentos />} />
           <Route path="/servicios/pension-alimentos" element={<PensionAlimentos />} />
           <Route path="/servicios/aumento-pension" element={<AumentoPension />} />
