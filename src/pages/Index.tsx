@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -6,8 +8,44 @@ import FAQ from "@/components/FAQ";
 import HowWeWork from "@/components/HowWeWork";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import useSeo from "@/hooks/useSeo";
 
 const Index = () => {
+  const location = useLocation();
+
+  useSeo({
+    title: "Abogado de familia en Chile | Pensión de alimentos y calculadora",
+    description:
+      "Abogado de familia y trabajadora social en Chile. Calculadora de pensiones, pensión de alimentos, retención y demanda de pensión, ayuda social y asesoría en derecho de familia.",
+    keywords: [
+      "abogado de familia",
+      "calculadora de pensiones",
+      "pension de alimentos",
+      "como se calcula la pensión de alimentos",
+      "abogado",
+      "derecho",
+      "familia",
+      "trabajadora social",
+      "ayuda social",
+      "rentención de pension",
+      "demanda de pension",
+      "papito corazon",
+    ],
+    ogTitle: "Abogado de familia en Chile | Pensión de alimentos y calculadora",
+    ogDescription:
+      "Especialistas en derecho de familia: pensión de alimentos, cálculo de pensiones, retención y demandas. Abogado y trabajadora social con apoyo integral.",
+  });
+
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.replace("#", "");
+    const element = document.getElementById(id);
+    if (element) {
+      // Timeout garantiza que el DOM ya pintó tras el cambio de ruta
+      setTimeout(() => element.scrollIntoView({ behavior: "smooth" }), 0);
+    }
+  }, [location]);
+
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Navbar />

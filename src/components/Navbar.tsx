@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Calculator, Scale, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
@@ -16,12 +17,12 @@ const Navbar = () => {
   ];
 
   const scrollToSection = (href: string) => {
-    if (href.startsWith("/#")) {
-      const id = href.replace("/#", "");
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+    if (!href.startsWith("/#")) return;
+
+    const id = href.replace("/#", "");
+    const element = document.getElementById(id);
+    if (location.pathname === "/" && element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
     setIsOpen(false);
   };
@@ -40,14 +41,15 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               link.href.startsWith("/#") ? (
-                <button
+                <Link
                   key={link.name}
+                  to={link.href}
                   onClick={() => scrollToSection(link.href)}
                   className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium flex items-center gap-1"
                 >
                   {link.icon && <link.icon className="h-4 w-4" />}
                   {link.name}
-                </button>
+                </Link>
               ) : (
                 <Link
                   key={link.name}
@@ -88,14 +90,15 @@ const Navbar = () => {
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 link.href.startsWith("/#") ? (
-                  <button
+                  <Link
                     key={link.name}
+                    to={link.href}
                     onClick={() => scrollToSection(link.href)}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium py-2 text-left flex items-center gap-2"
                   >
                     {link.icon && <link.icon className="h-4 w-4" />}
                     {link.name}
-                  </button>
+                  </Link>
                 ) : (
                   <Link
                     key={link.name}

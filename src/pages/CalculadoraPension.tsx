@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, AlertCircle, MessageCircle, Mail, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,9 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import useSeo from "@/hooks/useSeo";
 
-const INGRESO_MINIMO_2024 = 500000; // Ingreso mínimo mensual en Chile 2024
+const INGRESO_MINIMO_2025 = 529000; // Ingreso mínimo mensual en Chile 2024
 
 const emailSchema = z.string().email({ message: "Ingresa un correo válido" });
 
@@ -26,6 +27,24 @@ const CalculadoraPension = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const { toast } = useToast();
+  useSeo({
+    title: "Cómo calcular la pensión de alimentos en Chile | Calculadora 2025",
+    description:
+      "Calculadora de pensión de alimentos en Chile 2025: cuánto me corresponde por hijo, deudor de alimento, retención y demanda de pensión.",
+    keywords: [
+      "como calcular la pension de alimentos",
+      "pension de alimentos en chile",
+      "pension 2025",
+      "cuanto me corresponde por hijo",
+      "deudor de alimento",
+      "calculadora de pensiones",
+      "pension de alimentos",
+      "abogado de familia",
+    ],
+    ogTitle: "Calculadora de pensión de alimentos 2025 en Chile",
+    ogDescription:
+      "Calcula la pensión de alimentos según hijos y ingresos. Incluye escenarios de deudores de alimento y retención de pensión.",
+  });
 
   const calcularPension = () => {
     // Verificar si es pensionado sin ingresos extra
@@ -57,7 +76,7 @@ const CalculadoraPension = () => {
     const porcentajeFinal = Math.min(porcentaje, porcentajeMaximo);
 
     const pensionCalculada = ingresos * porcentajeFinal;
-    const pensionMinima = INGRESO_MINIMO_2024 * porcentajeFinal;
+    const pensionMinima = INGRESO_MINIMO_2025 * porcentajeFinal;
 
     // La pensión no puede ser menor al porcentaje del ingreso mínimo
     const pensionFinal = Math.max(pensionCalculada, pensionMinima);
@@ -237,7 +256,7 @@ const CalculadoraPension = () => {
                 <li>• <strong>1 hijo:</strong> 40% del ingreso mínimo mensual</li>
                 <li>• <strong>2 o más hijos:</strong> 30% del ingreso mínimo mensual por cada hijo</li>
                 <li>• <strong>Tope máximo:</strong> 50% de los ingresos del demandado</li>
-                <li>• <strong>Ingreso mínimo 2024:</strong> {formatCurrency(INGRESO_MINIMO_2024)}</li>
+                <li>• <strong>Ingreso mínimo 2024:</strong> {formatCurrency(INGRESO_MINIMO_2025)}</li>
               </ul>
             </div>
           </motion.div>
