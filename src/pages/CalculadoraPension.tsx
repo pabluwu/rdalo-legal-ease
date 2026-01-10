@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, AlertCircle, MessageCircle, Mail, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 
 const INGRESO_MINIMO_2025 = 529000; // Ingreso mínimo mensual en Chile 2024
 
@@ -27,25 +27,6 @@ const CalculadoraPension = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const { toast } = useToast();
-  useSeo({
-    title: "Cómo calcular la pensión de alimentos en Chile | Calculadora 2025",
-    description:
-      "Calculadora de pensión de alimentos en Chile 2025: cuánto me corresponde por hijo, deudor de alimento, retención y demanda de pensión.",
-    keywords: [
-      "como calcular la pension de alimentos",
-      "pension de alimentos en chile",
-      "pension 2025",
-      "cuanto me corresponde por hijo",
-      "deudor de alimento",
-      "calculadora de pensiones",
-      "pension de alimentos",
-      "abogado de familia",
-    ],
-    ogTitle: "Calculadora de pensión de alimentos 2025 en Chile",
-    ogDescription:
-      "Calcula la pensión de alimentos según hijos y ingresos. Incluye escenarios de deudores de alimento y retención de pensión.",
-  });
-
   const calcularPension = () => {
     // Verificar si es pensionado sin ingresos extra
     if (esPensionado === "si" && tieneIngresoExtra === "no") {
@@ -110,6 +91,10 @@ const CalculadoraPension = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Cómo calcular la pensión de alimentos en Chile | Calculadora 2025"
+        description="Calculadora de pensión de alimentos en Chile 2025: cuánto me corresponde por hijo, deudor de alimento, retención y demanda de pensión."
+      />
       <Navbar />
 
       {/* Hero */}
