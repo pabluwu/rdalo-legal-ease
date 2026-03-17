@@ -144,7 +144,7 @@ const CalculadoraPension = () => {
         body: JSON.stringify({
           nombre: "calculadora",
           correo: email,
-          telefono: 0,
+          telefono: 999999999,
           mensaje: "Hola, utilicé la calculadora de pensión y me gustaría obtener una asesoría.",
         }),
       });
