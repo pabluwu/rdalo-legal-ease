@@ -15,6 +15,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             # 1. Entrar a la carpeta y actualizar código
             cd ~/acuerdalo-landing/rdalo-legal-ease
