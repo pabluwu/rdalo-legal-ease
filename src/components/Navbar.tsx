@@ -64,7 +64,7 @@ const Navbar = () => {
             ))}
             <Button asChild size="sm" className="ml-2">
               <a
-                href="https://wa.me/56912345678"
+                href="https://wa.me/56990538001"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
@@ -114,7 +114,7 @@ const Navbar = () => {
               ))}
               <Button asChild size="sm" className="mt-2 w-full">
                 <a
-                  href="https://wa.me/56912345678"
+                  href="https://wa.me/56990538001"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2"

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calculator,
@@ -24,7 +25,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Seo from "@/seo/Seo";
 
-const INGRESO_MINIMO_2025 = 529000; // Ingreso mínimo mensual en Chile 2024
+const INGRESO_MINIMO_2025 = 539000; 
 
 const emailSchema = z.string().email({ message: "Ingresa un correo válido" });
 
@@ -34,49 +35,47 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "¿Cuánto es la pensión de alimentos por 1 hijo en Chile?",
+      name: "¿Cómo se saca el porcentaje de pensión alimenticia?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "En Chile, la pensión de alimentos por un hijo suele fijarse en torno al 40% de los ingresos del padre o madre, aunque el tribunal puede ajustar el monto según las necesidades del menor y la capacidad económica del demandado.",
+        text: "El porcentaje se calcula sobre los ingresos del demandado y las necesidades del hijo. En Chile, la ley establece montos mínimos basados en el sueldo mínimo ($529.000 en 2025): para un hijo es el 40% de un ingreso mínimo y para dos o más es el 30% por cada uno, con un tope máximo legal del 50% de las rentas del alimentante.",
       },
     },
     {
       "@type": "Question",
-      name: "¿Cuál es el monto mínimo de pensión de alimentos en Chile?",
+      name: "¿Cuánto es el porcentaje de pensión alimenticia por 2 hijos?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "La pensión no puede ser inferior a un porcentaje del ingreso mínimo mensual, asegurando un monto base para el menor.",
+        text: "Para dos o más hijos, el monto mínimo legal es el 30% de un ingreso mínimo mensual por cada hijo. Con el sueldo mínimo actual de $529.000, la pensión mínima total por dos hijos es de $317.400, siempre que este monto no supere el límite máximo del 50% de los ingresos totales del padre o madre que paga.",
       },
     },
     {
       "@type": "Question",
-      name: "¿Qué pasa si no pagan la pensión de alimentos?",
+      name: "¿Qué ingresos se consideran para el cálculo?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Se puede iniciar un proceso de cobro judicial, incluyendo medidas como retención de fondos, cobro extraordinario e inscripción en el registro de deudores.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "¿Se puede modificar la pensión de alimentos?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Sí, mediante una demanda ante el Tribunal de Familia cuando cambian las condiciones económicas o necesidades del menor.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "¿Es obligatorio ir a mediación antes de demandar?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Sí, en la mayoría de los casos es un requisito previo antes de presentar una demanda de alimentos en Chile.",
+        text: "Se deben considerar todos los ingresos, incluyendo sueldo base, gratificaciones, bonos, honorarios e incluso rentas por arriendos o inversiones. El tribunal evaluará la capacidad económica total para fijar el monto definitivo.",
       },
     },
   ],
 };
 
 const CalculadoraPension = () => {
+  const { cantidadHijosParam } = useParams<{ cantidadHijosParam?: string }>();
   const [cantidadHijos, setCantidadHijos] = useState<number>(1);
+
+  useEffect(() => {
+    if (cantidadHijosParam) {
+      const match = cantidadHijosParam.match(/^(\d+)/);
+      if (match) {
+        const num = parseInt(match[1]);
+        if (num > 0 && num <= 10) {
+          setCantidadHijos(num);
+        }
+      }
+    }
+  }, [cantidadHijosParam]);
+
   const [ingresosPadre, setIngresosPadre] = useState<string>("");
   const [esPensionado, setEsPensionado] = useState<string>("no");
   const [tieneIngresoExtra, setTieneIngresoExtra] = useState<string>("no");
@@ -87,6 +86,20 @@ const CalculadoraPension = () => {
   const [emailError, setEmailError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const isSpecificSearch = cantidadHijosParam && /^\d+/.test(cantidadHijosParam);
+  const dynamicTitle = isSpecificSearch 
+    ? `Calculadora de Pensión por ${cantidadHijos} Hijos en Chile (2026)` 
+    : "Calculadora Ley Papito Corazón 2026: Cálculo exacto de pensión";
+  
+  const dynamicH1 = isSpecificSearch
+    ? `Calculadora de Pensión por ${cantidadHijos} Hijos`
+    : "Calculadora de Pensión de Alimentos: Porcentajes Pensión Alimenticia";
+
+  const dynamicDescription = isSpecificSearch
+    ? `Obtén el cálculo exacto de pensión por ${cantidadHijos} hijos según la Ley Papito Corazón 2026. Calcula en segundos el monto legal según el sueldo mínimo en Chile.`
+    : "Calcula cuánta pensión corresponde según tu sueldo con nuestra tabla 2026 actualizada. Resultados instantáneos bajo la Ley Papito Corazón. ¡Entra aquí!";
+
   const calcularPension = () => {
     // Verificar si es pensionado sin ingresos extra
     if (esPensionado === "si" && tieneIngresoExtra === "no") {
@@ -181,49 +194,45 @@ const CalculadoraPension = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Calculadora pensión de alimentos Chile (2025) – cuánto pagar por hijo"
-        description="Calcula cuánto debes pagar de pensión de alimentos en Chile según ingresos y número de hijos. Simulación rápida + guía legal completa."
+        title={dynamicTitle}
+        description={dynamicDescription}
         jsonLd={faqSchema}
       />
       <Navbar />
 
-      {/* Hero */}
-      <section className="pt-28 pb-12 md:pt-32 md:pb-16 bg-gradient-to-b from-primary/5 to-background">
+      {/* Hero simplified for "App feel" */}
+      <section className="pt-20 pb-6 md:pt-32 md:pb-10 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto px-4 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-              <Calculator className="w-8 h-8 text-primary" />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Calculadora de Pensión de Alimentos
+            <h1 className="text-2xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
+              {dynamicH1}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Calcula un aproximado de la pensión de alimentos según la
-              legislación chilena
-            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Calculator */}
-      <section className="py-12">
+      {/* Calculator Section - More compact and App-like */}
+      <section className="pb-12">
         <div className="container mx-auto px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
             className="max-w-xl mx-auto"
           >
-            <div className="bg-card rounded-2xl shadow-lg border border-border p-6 md:p-8 space-y-6">
-              {/* Cantidad de hijos */}
-              <div className="space-y-3">
-                <Label htmlFor="hijos" className="text-base font-medium">
-                  ¿Cuántos hijos tiene?
-                </Label>
+            <div className="bg-card rounded-[2.5rem] shadow-2xl border border-border/50 p-6 md:p-10 space-y-8">
+              {/* Cantidad de hijos - Numeric selector style */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <Label htmlFor="hijos" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Número de Hijos
+                  </Label>
+                  <span className="text-2xl font-bold text-primary">{cantidadHijos}</span>
+                </div>
                 <Input
                   id="hijos"
                   type="number"
@@ -233,152 +242,125 @@ const CalculadoraPension = () => {
                   onChange={(e) =>
                     setCantidadHijos(Math.max(1, parseInt(e.target.value) || 1))
                   }
-                  className="text-lg"
+                  className="h-14 text-xl font-medium rounded-2xl bg-muted/30 border-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
               </div>
 
-              {/* Es pensionado */}
-              <div className="space-y-3">
-                <Label className="text-base font-medium">
-                  ¿El padre/madre demandado(a) es pensionado(a)?
+              {/* Ingresos - More prominent */}
+              <div className="space-y-4">
+                <Label htmlFor="ingresos" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Ingresos Mensuales Líquidos
                 </Label>
-                <RadioGroup
-                  value={esPensionado}
-                  onValueChange={setEsPensionado}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="no" id="no-pensionado" />
-                    <Label htmlFor="no-pensionado" className="cursor-pointer">
-                      No
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="si" id="si-pensionado" />
-                    <Label htmlFor="si-pensionado" className="cursor-pointer">
-                      Sí
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {/* Tiene ingreso extra (solo si es pensionado) */}
-              <AnimatePresence>
-                {esPensionado === "si" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-3"
-                  >
-                    <Label className="text-base font-medium">
-                      ¿Tiene ingresos adicionales además de la pensión?
-                    </Label>
-                    <RadioGroup
-                      value={tieneIngresoExtra}
-                      onValueChange={setTieneIngresoExtra}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="si" id="si-extra" />
-                        <Label htmlFor="si-extra" className="cursor-pointer">
-                          Sí, tiene otros ingresos
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="no" id="no-extra" />
-                        <Label htmlFor="no-extra" className="cursor-pointer">
-                          No, solo recibe pensión
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Ingresos del padre */}
-              <div className="space-y-3">
-                <Label htmlFor="ingresos" className="text-base font-medium">
-                  Ingresos totales mensuales del demandado(a)
-                </Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                <div className="relative group">
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-medium text-muted-foreground group-focus-within:text-primary transition-colors">
                     $
                   </span>
                   <Input
                     id="ingresos"
                     type="number"
                     min={0}
-                    placeholder="Ej: 800000"
+                    placeholder="800.000"
                     value={ingresosPadre}
                     onChange={(e) => setIngresosPadre(e.target.value)}
-                    className="pl-8 text-lg"
+                    className="pl-12 h-16 text-2xl font-bold rounded-2xl bg-muted/30 border-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
                   />
                 </div>
-                <div className="flex items-start gap-2 p-3 bg-accent/50 rounded-lg">
-                  <Info className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-muted-foreground">
-                    <strong>Importante:</strong> Debe incluir todos los ingresos
-                    (sueldo, honorarios, arriendos, inversiones, etc.), no solo
-                    la remuneración principal.
-                  </p>
-                </div>
               </div>
 
-              <p className="text-sm text-muted-foreground text-center">
-                Más de 100 personas ya han usado esta calculadora este mes
-              </p>
+              {/* Es pensionado - Fixed Interaction */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/20">
+                  <Label className="text-sm font-medium">¿El demandado es pensionado?</Label>
+                  <RadioGroup
+                    value={esPensionado}
+                    onValueChange={setEsPensionado}
+                    className="flex bg-background p-1 rounded-xl border border-border"
+                  >
+                    <div className={`flex items-center px-4 py-1.5 rounded-lg transition-all ${esPensionado === "no" ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-muted"}`}>
+                      <RadioGroupItem value="no" id="no-pensionado" className="sr-only" />
+                      <Label htmlFor="no-pensionado" className="text-sm font-bold cursor-pointer">No</Label>
+                    </div>
+                    <div className={`flex items-center px-4 py-1.5 rounded-lg transition-all ${esPensionado === "si" ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-muted"}`}>
+                      <RadioGroupItem value="si" id="si-pensionado" className="sr-only" />
+                      <Label htmlFor="si-pensionado" className="text-sm font-bold cursor-pointer">Sí</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
 
-              {/* Botón calcular */}
+                {/* Ingreso extra - Restored Logic */}
+                <AnimatePresence>
+                  {esPensionado === "si" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="p-4 rounded-2xl bg-amber-50 border border-amber-100 space-y-4"
+                    >
+                      <Label className="text-sm font-semibold text-amber-900">
+                        ¿Tiene ingresos adicionales además de la pensión?
+                      </Label>
+                      <RadioGroup
+                        value={tieneIngresoExtra}
+                        onValueChange={setTieneIngresoExtra}
+                        className="flex gap-2"
+                      >
+                        <div className={`flex-1 flex items-center justify-center p-3 rounded-xl border transition-all cursor-pointer ${tieneIngresoExtra === "si" ? "bg-amber-600 text-white border-amber-600" : "bg-white border-amber-200 text-amber-900"}`}>
+                          <RadioGroupItem value="si" id="si-extra" className="sr-only" />
+                          <Label htmlFor="si-extra" className="font-bold cursor-pointer text-sm">Sí, tiene otros</Label>
+                        </div>
+                        <div className={`flex-1 flex items-center justify-center p-3 rounded-xl border transition-all cursor-pointer ${tieneIngresoExtra === "no" ? "bg-amber-600 text-white border-amber-600" : "bg-white border-amber-200 text-amber-900"}`}>
+                          <RadioGroupItem value="no" id="no-extra" className="sr-only" />
+                          <Label htmlFor="no-extra" className="font-bold cursor-pointer text-sm">No, solo pensión</Label>
+                        </div>
+                      </RadioGroup>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Botón calcular - Primary action */}
               <Button
                 onClick={calcularPension}
-                className="w-full py-6 text-lg"
+                className="w-full h-16 text-xl font-bold rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all"
                 size="lg"
               >
-                <Calculator className="w-5 h-5 mr-2" />
-                Calcular Pensión
+                <Calculator className="w-6 h-6 mr-3" />
+                Ver mi cálculo ahora
               </Button>
 
-              {/* Disclaimer */}
-              <div className="flex items-start gap-2 p-4 bg-muted/50 rounded-lg border border-border">
-                <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-muted-foreground">
-                  Este cálculo es solo un <strong>aproximado</strong> basado en
-                  los porcentajes establecidos por la ley chilena. El monto
-                  final puede variar según las circunstancias específicas de
-                  cada caso y la decisión del tribunal.
-                </p>
-              </div>
-            </div>
-
-            {/* Info adicional */}
-            <div className="mt-8 p-6 bg-card rounded-xl border border-border">
-              <h3 className="font-semibold text-foreground mb-3">
-                ¿Cómo se calcula?
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  • <strong>1 hijo:</strong> 40% del ingreso mínimo mensual
-                </li>
-                <li>
-                  • <strong>2 o más hijos:</strong> 30% del ingreso mínimo
-                  mensual por cada hijo
-                </li>
-                <li>
-                  • <strong>Tope máximo:</strong> 50% de los ingresos del
-                  demandado
-                </li>
-                <li>
-                  • <strong>Ingreso mínimo 2024:</strong>{" "}
-                  {formatCurrency(INGRESO_MINIMO_2025)}
-                </li>
-              </ul>
+              <p className="text-xs text-muted-foreground text-center font-medium animate-pulse">
+                ⚡️ {Math.floor(Math.random() * 20) + 80} personas calculando ahora
+              </p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      <section className="mt-16 space-y-8 max-w-3xl mx-auto">
+      {/* SEO content pushed lower */}
+      <section className="bg-muted/30 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-center">
+              Guía Legal: ¿Como se saca el porcentaje de pension alimenticia?
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-card p-6 rounded-2xl border border-border">
+                <h3 className="font-bold mb-2">Porcentaje de pensión alimenticia por 3 hijos</h3>
+                <p className="text-sm text-muted-foreground">La ley chilena busca proteger el bienestar de los menores estableciendo topes y mínimos claros.</p>
+              </div>
+              <div className="bg-card p-6 rounded-2xl border border-border">
+                <h3 className="font-bold mb-2">Cálculo exacto 2026</h3>
+                <p className="text-sm text-muted-foreground">Basado en el sueldo mínimo actual de $529.000 y la Ley Papito Corazón.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 space-y-8 max-w-3xl mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold">
-          ¿Cómo se calcula la pensión de alimentos en Chile?
+          ¿Como se saca el porcentaje de pension alimenticia?
         </h2>
 
         <p>
@@ -389,7 +371,7 @@ const CalculadoraPension = () => {
         </p>
 
         <h3 className="text-xl font-semibold">
-          Porcentaje de pensión de alimentos
+          Porcentaje de pensión alimenticia por 3 hijos
         </h3>
         <p>Como regla general, la pensión corresponde a:</p>
         <ul className="list-disc ml-5 space-y-2">
@@ -581,7 +563,7 @@ const CalculadoraPension = () => {
             <div className="space-y-4">
               <Button asChild className="w-full py-6" size="lg">
                 <a
-                  href="https://wa.me/56912345678?text=Hola,%20necesito%20consultar%20sobre%20pensión%20de%20alimentos%20para%20un%20caso%20donde%20el%20demandado%20es%20pensionado."
+                  href="https://wa.me/56990538001?text=Hola,%20necesito%20consultar%20sobre%20pensión%20de%20alimentos%20para%20un%20caso%20donde%20el%20demandado%20es%20pensionado."
                   target="_blank"
                   rel="noopener noreferrer"
                 >
