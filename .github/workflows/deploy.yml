@@ -1,0 +1,30 @@
+name: Deploy Landing
+
+on:
+  push:
+    branches:
+      - main # Ajusta a 'master' si esa es tu rama
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # 1. Entrar a la carpeta y actualizar código
+            cd ~/acuerdalo-landing/rdalo-legal-ease
+            git pull origin main
+            
+            # 2. Instalar y construir
+            npm install
+            npm run build
+            
+            # 3. Mover archivos y reiniciar Nginx
+            # Nota: Usamos sudo aquí. Asegúrate de que el usuario ubuntu tenga permisos NOPASSWD
+            sudo rsync -av ~/acuerdalo-landing/rdalo-legal-ease/dist/ /var/www/acuerdalo/
+            sudo systemctl restart nginx
