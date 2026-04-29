@@ -239,9 +239,18 @@ const CalculadoraPension = () => {
                   min={1}
                   max={10}
                   value={cantidadHijos}
-                  onChange={(e) =>
-                    setCantidadHijos(Math.max(1, parseInt(e.target.value) || 1))
-                  }
+                  onChange={(e) => {
+                    // Permite borrar y escribir libremente
+                    setCantidadHijos(e.target.value);
+                  }}
+                  onBlur={() => {
+                    let num = parseInt(cantidadHijos);
+            
+                    if (isNaN(num) || num < 1) num = 1;
+                    if (num > 10) num = 10;
+            
+                    setCantidadHijos(String(num));
+                  }}
                   className="h-14 text-xl font-medium rounded-2xl bg-muted/30 border-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
               </div>
