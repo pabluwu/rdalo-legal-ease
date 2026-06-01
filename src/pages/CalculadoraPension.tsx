@@ -19,15 +19,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { z } from "zod";
+import ModalCalculadora, { WizardData } from "@/components/ModalCalculadora";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Seo from "@/seo/Seo";
 
 const INGRESO_MINIMO_2025 = 539000; 
-
-const emailSchema = z.string().email({ message: "Ingresa un correo válido" });
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -82,8 +80,6 @@ const CalculadoraPension = () => {
   const [resultado, setResultado] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showPensionadoWarning, setShowPensionadoWarning] = useState(false);
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -139,15 +135,8 @@ const CalculadoraPension = () => {
     setShowModal(true);
   };
 
-  const handleEmailSubmit = async () => {
-    const validation = emailSchema.safeParse(email);
-    if (!validation.success) {
-      setEmailError(validation.error.errors[0].message);
-      return;
-    }
-    setEmailError("");
+  const handleWizardSubmit = async (data: WizardData) => {
     setIsSubmitting(true);
-
     try {
       const response = await fetch("https://api.acuerdalo.cl/api/contacto", {
         method: "POST",
@@ -155,27 +144,42 @@ const CalculadoraPension = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombre: "calculadora",
-          correo: email,
-          telefono: 999999999,
-          mensaje: "Hola, utilicé la calculadora de pensión y me gustaría obtener una asesoría.",
+          nombre: data.contacto.nombre,
+          correo: data.contacto.email,
+          telefono: data.contacto.whatsapp,
+          mensaje: [
+            "NUEVA PRE-EVALUACIÓN DE PENSIÓN",
+            "--------------------------------",
+            `Monto Estimado: ${formatCurrency(data.montoCalculado)}`,
+            `Número de Hijos: ${data.numeroHijos}`,
+            "",
+            "DATOS DEL CASO:",
+            `- Rol: ${data.respuestas.rol}`,
+            `- Gastos Extraordinarios: ${data.respuestas.gastosExtraordinarios}`,
+            `- Situación Laboral: ${data.respuestas.situacionLaboral}`,
+            `- Acuerdo Previo: ${data.respuestas.acuerdoPrevio}`,
+            "",
+            "CONTACTO:",
+            `- Nombre: ${data.contacto.nombre}`,
+            `- WhatsApp: ${data.contacto.whatsapp}`,
+            `- Email: ${data.contacto.email}`
+          ].join("\n"),
         }),
       });
 
       if (response.ok) {
         toast({
-          title: "¡Gracias!",
-          description: "Te enviaremos una orientación más precisa según tu caso.",
+          title: "¡Recibido!",
+          description: "Un especialista revisará tu caso y te contactará a la brevedad.",
         });
         setShowModal(false);
-        setEmail("");
       } else {
         throw new Error("Error en la solicitud");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo enviar el correo. Por favor intenta nuevamente.",
+        description: "No se pudo enviar la información. Por favor intenta nuevamente.",
         variant: "destructive",
       });
     } finally {
@@ -455,86 +459,14 @@ const CalculadoraPension = () => {
         </Button>
       </div>
 
-      {/* Modal de resultado */}
-      <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center text-2xl">
-              Resultado del Cálculo
-            </DialogTitle>
-            <DialogDescription className="text-center">
-              Pensión aproximada para {cantidadHijos}{" "}
-              {cantidadHijos === 1 ? "hijo" : "hijos"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="py-6">
-            <div className="text-center mb-6">
-              <p className="text-4xl font-bold text-primary">
-                {resultado !== null && formatCurrency(resultado)}
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                mensuales aproximados
-              </p>
-            </div>
-
-            <div className="p-4 bg-accent/50 rounded-lg mb-6">
-              <p className="text-sm text-muted-foreground text-center">
-                Este cálculo es solo una referencia. Muchas personas terminan
-                pagando más o menos de lo que corresponde.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-center text-sm font-medium text-foreground">
-                Un abogado puede ayudarte a pagar menos o exigir el monto justo
-              </p>
-              <Button asChild className="w-full py-6" size="lg">
-                <a
-                  href="https://wa.me/56990538001?text=Hola,%20acabo%20de%20usar%20la%20calculadora%20de%20pensión%20y%20me%20gustaría%20una%20consulta%20profesional."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Revisa tu caso con un abogado
-                </a>
-              </Button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    o déjanos tu correo
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder="Recibe una estimación más precisa en tu correo"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailError("");
-                    }}
-                    className={emailError ? "border-destructive" : ""}
-                  />
-                  <Button onClick={handleEmailSubmit} variant="secondary" disabled={isSubmitting}>
-                    <Mail className="w-4 h-4" />
-                  </Button>
-                </div>
-                {emailError && (
-                  <p className="text-sm text-destructive">{emailError}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Modal de resultado con Wizard */}
+      <ModalCalculadora
+        open={showModal}
+        onOpenChange={setShowModal}
+        montoCalculado={resultado || 0}
+        numeroHijos={cantidadHijos}
+        onSubmit={handleWizardSubmit}
+      />
 
       {/* Modal para pensionados sin ingreso extra */}
       <Dialog
