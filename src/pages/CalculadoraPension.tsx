@@ -200,6 +200,7 @@ const CalculadoraPension = () => {
       <Seo
         title={dynamicTitle}
         description={dynamicDescription}
+        canonical="https://acuerdalo.cl/calculadora-pension"
         jsonLd={faqSchema}
       />
       <Navbar />

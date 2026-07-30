@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,12 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const MedidasProteccionIndex = () => {
-  useSeo({
-    title: "Guías de medidas de protección | Acuérdalo",
-    description:
-      "Guías sobre medidas de protección en el ámbito familiar. Estamos preparando nuevos contenidos.",
-    ogTitle: "Guías de medidas de protección | Acuérdalo",
-    ogDescription:
-      "Guías sobre medidas de protección en el ámbito familiar.",
-  });
-
   return (
     <main className="min-h-screen bg-background font-outfit">
+      <Seo
+        title="Guías de medidas de protección | Acuérdalo"
+        description="Guías sobre medidas de protección en el ámbito familiar. Estamos preparando nuevos contenidos."
+      />
       <Navbar />
       <div className="pt-16">
         <header className="bg-gradient-to-b from-primary/5 to-background">

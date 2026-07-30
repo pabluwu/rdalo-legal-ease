@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,12 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const DivorcioIndex = () => {
-  useSeo({
-    title: "Guías de divorcio en Chile | Acuérdalo",
-    description:
-      "Accede a guías sobre divorcio en Chile. Estamos preparando contenidos organizados por etapas.",
-    ogTitle: "Guías de divorcio en Chile | Acuérdalo",
-    ogDescription:
-      "Guías sobre divorcio en Chile organizadas por temas y etapas.",
-  });
-
   return (
     <main className="min-h-screen bg-background font-outfit">
+      <Seo
+        title="Guías de divorcio en Chile | Acuérdalo"
+        description="Accede a guías sobre divorcio en Chile. Estamos preparando contenidos organizados por etapas."
+      />
       <Navbar />
       <div className="pt-16">
         <header className="bg-gradient-to-b from-primary/5 to-background">

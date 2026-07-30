@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,12 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const GuiasIndex = () => {
-  useSeo({
-    title: "Guías legales en Chile | Acuérdalo",
-    description:
-      "Guías legales en Chile organizadas por tema: pensión de alimentos, divorcio, visitas y cuidado personal, y medidas de protección.",
-    ogTitle: "Guías legales en Chile | Acuérdalo",
-    ogDescription:
-      "Explora guías legales organizadas por tema: pensión de alimentos, divorcio, visitas y cuidado personal, y medidas de protección.",
-  });
-
   return (
     <main className="min-h-screen bg-background font-outfit">
+      <Seo
+        title="Guías legales en Chile | Acuérdalo"
+        description="Guías legales en Chile organizadas por tema: pensión de alimentos, divorcio, visitas y cuidado personal, y medidas de protección."
+      />
       <Navbar />
       <div className="pt-16">
         <header className="bg-gradient-to-b from-primary/5 to-background">

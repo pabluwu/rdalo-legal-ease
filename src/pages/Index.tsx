@@ -8,33 +8,10 @@ import FAQ from "@/components/FAQ";
 import HowWeWork from "@/components/HowWeWork";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 
 const Index = () => {
   const location = useLocation();
-
-  useSeo({
-    title: "Abogado de familia en Chile | Pensión de alimentos y calculadora",
-    description:
-      "Abogado de familia y trabajadora social en Chile. Calculadora de pensiones, pensión de alimentos, retención y demanda de pensión, ayuda social y asesoría en derecho de familia.",
-    keywords: [
-      "abogado de familia",
-      "calculadora de pensiones",
-      "pension de alimentos",
-      "como se calcula la pensión de alimentos",
-      "abogado",
-      "derecho",
-      "familia",
-      "trabajadora social",
-      "ayuda social",
-      "rentención de pension",
-      "demanda de pension",
-      "papito corazon",
-    ],
-    ogTitle: "Abogado de familia en Chile | Pensión de alimentos y calculadora",
-    ogDescription:
-      "Especialistas en derecho de familia: pensión de alimentos, cálculo de pensiones, retención y demandas. Abogado y trabajadora social con apoyo integral.",
-  });
 
   useEffect(() => {
     if (!location.hash) return;
@@ -48,6 +25,10 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background font-outfit">
+      <Seo
+        title="Abogado de familia en Chile | Pensión de alimentos y calculadora"
+        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensiones, pensión de alimentos, retención y demanda de pensión, ayuda social y asesoría en derecho de familia."
+      />
       <Navbar />
       <div className="pt-16">
         <Hero />

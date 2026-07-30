@@ -1,19 +1,6 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import type { RouteRecord } from "vite-react-ssg";
+import Layout from "./Layout";
 import Index from "./pages/Index";
-import useGtmPageView from "./hooks/useGtmPageView";
-import Documentos from "./pages/Documentos";
-import PensionAlimentos from "./pages/servicios/PensionAlimentos";
-import AumentoPension from "./pages/servicios/AumentoPension";
-import RebajaPension from "./pages/servicios/RebajaPension";
-import Visitas from "./pages/servicios/Visitas";
-import CuidadoPersonal from "./pages/servicios/CuidadoPersonal";
-import Divorcio from "./pages/servicios/Divorcio";
-import CobroDeuda from "./pages/servicios/CobroDeuda";
-import Acuerdos from "./pages/servicios/Acuerdos";
 import CalculadoraPension from "./pages/CalculadoraPension";
 import NotFound from "./pages/NotFound";
 import GuiasIndex from "./pages/guias/GuiasIndex";
@@ -26,59 +13,39 @@ import VisitasCuidadoPersonalMarcoTeorico from "./pages/guias/VisitasCuidadoPers
 import MedidasProteccionIndex from "./pages/guias/MedidasProteccionIndex";
 import MedidasProteccionMarcoTeorico from "./pages/guias/MedidasProteccionMarcoTeorico";
 
-const queryClient = new QueryClient();
-
-const GtmPageViewListener = () => {
-  useGtmPageView();
-  return null;
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <GtmPageViewListener />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/calculadora-pension" element={<CalculadoraPension />} />
-          <Route path="/calculadora-pension/:cantidadHijosParam" element={<CalculadoraPension />} />
-          <Route path="/guias" element={<GuiasIndex />} />
-          <Route path="/guias/pension-de-alimentos" element={<PensionAlimentosIndex />} />
-          <Route
-            path="/guias/pension-de-alimentos/marco-teorico"
-            element={<PensionAlimentosMarcoTeorico />}
-          />
-          <Route path="/guias/divorcio" element={<DivorcioIndex />} />
-          <Route path="/guias/divorcio/marco-teorico" element={<DivorcioMarcoTeorico />} />
-          <Route
-            path="/guias/visitas-y-cuidado-personal"
-            element={<VisitasCuidadoPersonalIndex />}
-          />
-          <Route
-            path="/guias/visitas-y-cuidado-personal/marco-teorico"
-            element={<VisitasCuidadoPersonalMarcoTeorico />}
-          />
-          <Route path="/guias/medidas-de-proteccion" element={<MedidasProteccionIndex />} />
-          <Route
-            path="/guias/medidas-de-proteccion/marco-teorico"
-            element={<MedidasProteccionMarcoTeorico />}
-          />
-          {/* <Route path="/documentos" element={<Documentos />} />
-          <Route path="/servicios/pension-alimentos" element={<PensionAlimentos />} />
-          <Route path="/servicios/aumento-pension" element={<AumentoPension />} />
-          <Route path="/servicios/rebaja-pension" element={<RebajaPension />} />
-          <Route path="/servicios/visitas" element={<Visitas />} />
-          <Route path="/servicios/cuidado-personal" element={<CuidadoPersonal />} />
-          <Route path="/servicios/divorcio" element={<Divorcio />} />
-          <Route path="/servicios/cobro-deuda" element={<CobroDeuda />} />
-          <Route path="/servicios/acuerdos" element={<Acuerdos />} /> */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+export const routes: RouteRecord[] = [
+  {
+    path: "/",
+    Component: Layout,
+    children: [
+      { index: true, Component: Index },
+      { path: "calculadora-pension", Component: CalculadoraPension },
+      { path: "calculadora-pension/:cantidadHijosParam", Component: CalculadoraPension },
+      { path: "guias", Component: GuiasIndex },
+      { path: "guias/pension-de-alimentos", Component: PensionAlimentosIndex },
+      {
+        path: "guias/pension-de-alimentos/marco-teorico",
+        Component: PensionAlimentosMarcoTeorico,
+      },
+      { path: "guias/divorcio", Component: DivorcioIndex },
+      { path: "guias/divorcio/marco-teorico", Component: DivorcioMarcoTeorico },
+      {
+        path: "guias/visitas-y-cuidado-personal",
+        Component: VisitasCuidadoPersonalIndex,
+      },
+      {
+        path: "guias/visitas-y-cuidado-personal/marco-teorico",
+        Component: VisitasCuidadoPersonalMarcoTeorico,
+      },
+      { path: "guias/medidas-de-proteccion", Component: MedidasProteccionIndex },
+      {
+        path: "guias/medidas-de-proteccion/marco-teorico",
+        Component: MedidasProteccionMarcoTeorico,
+      },
+      // Ruta estática, prerenderizada, servida como página de error real (ver config nginx)
+      { path: "404", Component: NotFound },
+      // Fallback de cliente para navegación interna a rutas inexistentes
+      { path: "*", Component: NotFound },
+    ],
+  },
+];

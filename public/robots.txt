@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Optional: actual sitemap URL if available; update the domain if different
 Sitemap: https://acuerdalo.cl/sitemap.xml

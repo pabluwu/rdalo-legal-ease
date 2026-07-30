@@ -15,4 +15,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  ssgOptions: {
+    entry: "src/main.tsx",
+    // URLs limpias sin trailing slash: /foo -> /foo/index.html
+    dirStyle: "nested",
+    formatting: "none",
+    beastiesOptions: false,
+  },
 }));

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import useSeo from "@/hooks/useSeo";
+import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,12 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const PensionAlimentosIndex = () => {
-  useSeo({
-    title: "Guías de pensión de alimentos en Chile | Acuérdalo",
-    description:
-      "Guías sobre pensión de alimentos en Chile: marco jurídico, requisitos, procedimiento y más.",
-    ogTitle: "Guías de pensión de alimentos en Chile | Acuérdalo",
-    ogDescription:
-      "Explora guías sobre pensión de alimentos: marco jurídico, requisitos y procedimiento.",
-  });
-
   return (
     <main className="min-h-screen bg-background font-outfit">
+      <Seo
+        title="Guías de pensión de alimentos en Chile | Acuérdalo"
+        description="Guías sobre pensión de alimentos en Chile: marco jurídico, requisitos, procedimiento y más."
+      />
       <Navbar />
       <div className="pt-16">
         <header className="bg-gradient-to-b from-primary/5 to-background">
