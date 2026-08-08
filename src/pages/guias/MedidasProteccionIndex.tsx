@@ -16,7 +16,7 @@ const MedidasProteccionIndex = () => {
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de medidas de protección | Acuérdalo"
-        description="Guías sobre medidas de protección en el ámbito familiar. Estamos preparando nuevos contenidos."
+        description="Guías sobre medidas de protección de derechos de niños, niñas y adolescentes en Chile: cuándo proceden y ante qué tribunal se solicitan."
       />
       <Navbar />
       <div className="pt-16">
@@ -48,7 +48,10 @@ const MedidasProteccionIndex = () => {
               Guías de medidas de protección
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mt-4">
-              Estamos preparando guías sobre medidas de protección en el ámbito familiar.
+              Las medidas de protección buscan resguardar a niños, niñas y adolescentes cuyos
+              derechos están siendo vulnerados o amenazados. Se rigen por la Ley N° 19.968 sobre
+              Tribunales de Familia, la Ley N° 21.430 de garantías de la niñez y la Convención sobre
+              los Derechos del Niño.
             </p>
           </div>
         </header>
@@ -62,6 +65,46 @@ const MedidasProteccionIndex = () => {
               <li>
                 <Link className="hover:underline" to="/guias/medidas-de-proteccion/marco-teorico">
                   Marco teórico de medidas de protección de derechos
+                </Link>
+              </li>
+            </ul>
+          </article>
+
+          <article className="rounded-2xl border border-border bg-card p-6 mt-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-3">
+              ¿Qué vas a encontrar en esta categoría?
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Cualquier persona, incluido el propio niño, niña o adolescente, puede solicitar una
+              medida de protección ante el Tribunal de Familia competente cuando existe una
+              vulneración de derechos: negligencia, maltrato, exposición a violencia intrafamiliar u
+              otras situaciones de riesgo. El tribunal puede decretar medidas como el ingreso a un
+              programa de apoyo, la asistencia obligatoria a tratamiento, o la derivación al Servicio
+              Nacional de Protección Especializada, creado por la Ley N° 21.302.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-4">
+              Estas medidas son independientes de un juicio de divorcio, pensión de alimentos o
+              cuidado personal, aunque pueden coexistir con ellos si en esas causas también se detecta
+              una vulneración de derechos.
+            </p>
+          </article>
+
+          <article className="rounded-2xl border border-border bg-card p-6 mt-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-3">Guías relacionadas</h2>
+            <ul className="text-primary space-y-2 text-sm">
+              <li>
+                <Link className="hover:underline" to="/guias/visitas-y-cuidado-personal">
+                  Guías de visitas y cuidado personal
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:underline" to="/guias/divorcio">
+                  Guías de divorcio
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:underline" to="/guias/pension-de-alimentos">
+                  Guías de pensión de alimentos
                 </Link>
               </li>
             </ul>

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
@@ -126,6 +127,7 @@ const PensionAlimentosMarcoTeorico = () => {
                 marco legal, requisitos, procedimiento, cálculo, incumplimiento y su relación con
                 el derecho de visitas.
               </p>
+              <AuthorByline updatedAt="8 de agosto de 2026" />
             </div>
           </div>
         </header>

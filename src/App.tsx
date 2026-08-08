@@ -2,6 +2,7 @@ import type { RouteRecord } from "vite-react-ssg";
 import Layout from "./Layout";
 import Index from "./pages/Index";
 import CalculadoraPension from "./pages/CalculadoraPension";
+import QuienesSomos from "./pages/QuienesSomos";
 import NotFound from "./pages/NotFound";
 import GuiasIndex from "./pages/guias/GuiasIndex";
 import PensionAlimentosIndex from "./pages/guias/PensionAlimentosIndex";
@@ -21,6 +22,7 @@ export const routes: RouteRecord[] = [
       { index: true, Component: Index },
       { path: "calculadora-pension", Component: CalculadoraPension },
       { path: "calculadora-pension/:cantidadHijosParam", Component: CalculadoraPension },
+      { path: "quienes-somos", Component: QuienesSomos },
       { path: "guias", Component: GuiasIndex },
       { path: "guias/pension-de-alimentos", Component: PensionAlimentosIndex },
       {

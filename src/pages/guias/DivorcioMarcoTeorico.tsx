@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
 import {
   Breadcrumb,
@@ -79,8 +80,8 @@ const DivorcioMarcoTeorico = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
-        title="Divorcio en Chile: marco legal y tipos"
-        description="Guía sobre divorcio en Chile: naturaleza jurídica, marco legal, tipos y plazos, requisitos, compensación económica, bienes y efectos en hijos."
+        title="Divorcio en Chile: requisitos, plazos y marco legal 2026"
+        description="Guía sobre el divorcio en Chile: naturaleza jurídica, marco legal, tipos, plazos, requisitos, compensación económica, bienes y efectos en los hijos."
         robots="index,follow"
         jsonLd={faqJsonLd}
       />
@@ -125,6 +126,7 @@ const DivorcioMarcoTeorico = () => {
                 Guía jurídica sobre el divorcio en Chile: naturaleza jurídica, marco legal, tipos,
                 requisitos, compensación económica, bienes y efectos respecto de los hijos.
               </p>
+              <AuthorByline updatedAt="8 de agosto de 2026" />
             </div>
           </div>
         </header>
@@ -189,7 +191,16 @@ const DivorcioMarcoTeorico = () => {
                     2.1 Ley de Matrimonio Civil
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 19.947 introdujo el divorcio vincular en Chile en el año 2004. Regula
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=225128"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 19.947
+                    </a>{" "}
+                    introdujo el divorcio vincular en Chile en el año 2004. Regula
                     los tipos de divorcio, las causales, los plazos y los efectos jurídicos del
                     término del matrimonio.
                   </p>
@@ -199,7 +210,16 @@ const DivorcioMarcoTeorico = () => {
                     2.2 Reformas de eficiencia judicial
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 21.394 introdujo mejoras procedimentales, como la posibilidad de
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1168803"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 21.394
+                    </a>{" "}
+                    introdujo mejoras procedimentales, como la posibilidad de
                     audiencias remotas y el llamado divorcio de plano en casos de mutuo acuerdo bajo
                     estrictas condiciones.
                   </p>

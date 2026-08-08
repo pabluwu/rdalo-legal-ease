@@ -86,7 +86,7 @@ const CalculadoraPension = () => {
   const isSpecificSearch = cantidadHijosParam && /^\d+/.test(cantidadHijosParam);
   const dynamicTitle = isSpecificSearch 
     ? `Calculadora de Pensión por ${cantidadHijos} Hijos en Chile (2026)` 
-    : "Calculadora Ley Papito Corazón 2026: Cálculo exacto de pensión";
+    : "Calculadora Ley Papito Corazón: cálculo exacto de pensión";
   
   const dynamicH1 = isSpecificSearch
     ? `Calculadora de Pensión por ${cantidadHijos} Hijos`

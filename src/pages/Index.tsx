@@ -10,6 +10,27 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  name: "Acuérdalo",
+  url: "https://acuerdalo.cl",
+  image: "https://acuerdalo.cl/og-image.jpg",
+  telephone: "+56990538001",
+  areaServed: {
+    "@type": "Country",
+    name: "Chile",
+  },
+  description:
+    "Asesoría legal en derecho de familia en Chile: pensión de alimentos, divorcio, cuidado personal y medidas de protección.",
+  serviceType: [
+    "Pensión de alimentos",
+    "Divorcio",
+    "Cuidado personal",
+    "Medidas de protección",
+  ],
+};
+
 const Index = () => {
   const location = useLocation();
 
@@ -26,8 +47,9 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
-        title="Abogado de familia en Chile | Pensión de alimentos y calculadora"
-        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensiones, pensión de alimentos, retención y demanda de pensión, ayuda social y asesoría en derecho de familia."
+        title="Abogado de familia en Chile: pensión y calculadora online"
+        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensión de alimentos, divorcio, retención, demanda y asesoría en derecho de familia."
+        jsonLd={organizationJsonLd}
       />
       <Navbar />
       <div className="pt-16">

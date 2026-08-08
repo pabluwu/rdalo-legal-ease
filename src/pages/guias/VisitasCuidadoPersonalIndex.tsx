@@ -16,7 +16,7 @@ const VisitasCuidadoPersonalIndex = () => {
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de visitas y cuidado personal | Acuérdalo"
-        description="Guías sobre relación directa y regular, y cuidado personal. Estamos preparando nuevos contenidos."
+        description="Guías sobre cuidado personal y relación directa y regular en Chile: corresponsabilidad parental, criterios judiciales y derechos de los hijos."
       />
       <Navbar />
       <div className="pt-16">
@@ -48,7 +48,10 @@ const VisitasCuidadoPersonalIndex = () => {
               Guías de visitas y cuidado personal
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mt-4">
-              Estamos preparando guías sobre relación directa y regular, y cuidado personal.
+              La Ley N° 20.680 establece que ambos padres deben participar de forma activa y
+              equitativa en la crianza de los hijos, vivan juntos o separados. Estas guías explican
+              cómo se define el cuidado personal, qué es la relación directa y regular (visitas), y
+              qué criterios usa el tribunal para resolver desacuerdos.
             </p>
           </div>
         </header>
@@ -65,6 +68,45 @@ const VisitasCuidadoPersonalIndex = () => {
                   to="/guias/visitas-y-cuidado-personal/marco-teorico"
                 >
                   Marco teórico de cuidado personal y relación directa y regular
+                </Link>
+              </li>
+            </ul>
+          </article>
+
+          <article className="rounded-2xl border border-border bg-card p-6 mt-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-3">
+              ¿Qué vas a encontrar en esta categoría?
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              El cuidado personal determina con quién vive el hijo o hija el día a día, mientras que
+              la relación directa y regular (comúnmente llamada "visitas") organiza el tiempo del
+              padre o madre que no vive con él. El artículo 225-2 del Código Civil fija los criterios
+              que el tribunal pondera para resolver: la vinculación afectiva, la disponibilidad para
+              atender al hijo y su opinión, según su edad y madurez. El artículo 229-2 protege además
+              el derecho de los abuelos a mantener contacto con sus nietos.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-4">
+              Estos acuerdos suelen resolverse en paralelo a un proceso de divorcio o de pensión de
+              alimentos; revisa esas guías si es tu caso.
+            </p>
+          </article>
+
+          <article className="rounded-2xl border border-border bg-card p-6 mt-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-3">Guías relacionadas</h2>
+            <ul className="text-primary space-y-2 text-sm">
+              <li>
+                <Link className="hover:underline" to="/guias/divorcio">
+                  Guías de divorcio
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:underline" to="/guias/pension-de-alimentos">
+                  Guías de pensión de alimentos
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:underline" to="/guias/medidas-de-proteccion">
+                  Guías de medidas de protección
                 </Link>
               </li>
             </ul>

@@ -24,7 +24,7 @@ const Hero = () => {
           </span>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
-            
+            Abogado de familia en Chile:{" "}
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
               Acuérdalo
             </span>
