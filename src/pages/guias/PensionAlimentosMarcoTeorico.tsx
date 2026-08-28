@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -76,6 +77,13 @@ const faqJsonLd = {
   })),
 };
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Pensión de alimentos", path: "/guias/pension-de-alimentos" },
+  { name: "Marco teórico", path: "/guias/pension-de-alimentos/marco-teorico" },
+]);
+
 const PensionAlimentosMarcoTeorico = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
@@ -83,7 +91,7 @@ const PensionAlimentosMarcoTeorico = () => {
         title="Pensión de alimentos en Chile: marco legal y requisitos"
         description="Guía sobre pensión de alimentos en Chile: naturaleza jurídica, marco legal, requisitos, cálculo, incumplimiento, aumento y relación con visitas."
         robots="index,follow"
-        jsonLd={faqJsonLd}
+        jsonLd={[faqJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">
@@ -127,7 +135,7 @@ const PensionAlimentosMarcoTeorico = () => {
                 marco legal, requisitos, procedimiento, cálculo, incumplimiento y su relación con
                 el derecho de visitas.
               </p>
-              <AuthorByline updatedAt="8 de agosto de 2026" />
+              <AuthorByline updatedAt="28 de agosto de 2026" />
             </div>
           </div>
         </header>
@@ -206,7 +214,16 @@ const PensionAlimentosMarcoTeorico = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">2.2 Ley N° 14.908</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Regula el procedimiento judicial de alimentos, las medidas de apremio y las
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=27977"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 14.908
+                    </a>{" "}
+                    regula el procedimiento judicial de alimentos, las medidas de apremio y las
                     garantías de pago. Ha sido modificada de forma sustancial en los últimos años
                     para enfrentar la morosidad estructural.
                   </p>
@@ -216,7 +233,16 @@ const PensionAlimentosMarcoTeorico = () => {
                     2.3 Ley de Responsabilidad Parental
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Introdujo el Mecanismo de Pago Efectivo, permitiendo al tribunal investigar el
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1181003"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 21.484
+                    </a>{" "}
+                    introdujo el Mecanismo de Pago Efectivo, permitiendo al tribunal investigar el
                     patrimonio del deudor en cuentas bancarias, instrumentos financieros y fondos
                     previsionales.
                   </p>
@@ -226,7 +252,16 @@ const PensionAlimentosMarcoTeorico = () => {
                     2.4 Registro Nacional de Deudores
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Establece un sistema de control que genera consecuencias civiles, financieras y
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1168463"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 21.389
+                    </a>{" "}
+                    establece un sistema de control que genera consecuencias civiles, financieras y
                     administrativas para quienes adeudan pensiones de alimentos.
                   </p>
                 </div>
@@ -333,6 +368,13 @@ const PensionAlimentosMarcoTeorico = () => {
                   </p>
                 </div>
               </div>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                Usa nuestra{" "}
+                <Link to="/calculadora-pension" className="text-primary hover:underline">
+                  calculadora de pensión de alimentos
+                </Link>{" "}
+                para estimar un monto de referencia según tu caso.
+              </p>
             </section>
 
             <section id="incumplimiento" className="scroll-mt-24">

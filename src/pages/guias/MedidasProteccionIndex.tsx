@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,12 +12,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Medidas de protección", path: "/guias/medidas-de-proteccion" },
+]);
+
 const MedidasProteccionIndex = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de medidas de protección | Acuérdalo"
         description="Guías sobre medidas de protección de derechos de niños, niñas y adolescentes en Chile: cuándo proceden y ante qué tribunal se solicitan."
+        jsonLd={breadcrumbJsonLd}
       />
       <Navbar />
       <div className="pt-16">

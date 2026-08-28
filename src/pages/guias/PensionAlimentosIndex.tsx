@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,12 +12,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Pensión de alimentos", path: "/guias/pension-de-alimentos" },
+]);
+
 const PensionAlimentosIndex = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de pensión de alimentos en Chile | Acuérdalo"
         description="Guías sobre pensión de alimentos en Chile: marco jurídico, montos, requisitos, procedimiento judicial y cálculo según la Ley N° 14.908."
+        jsonLd={breadcrumbJsonLd}
       />
       <Navbar />
       <div className="pt-16">

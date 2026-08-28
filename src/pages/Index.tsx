@@ -48,7 +48,7 @@ const Index = () => {
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Abogado de familia en Chile: pensión y calculadora online"
-        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensión de alimentos, divorcio, retención, demanda y asesoría en derecho de familia."
+        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensión de alimentos, divorcio, retención, demanda y asesoría legal en derecho de familia."
         jsonLd={organizationJsonLd}
       />
       <Navbar />

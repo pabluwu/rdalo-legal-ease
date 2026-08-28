@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -82,14 +83,21 @@ const faqJsonLd = {
   })),
 };
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Visitas y cuidado personal", path: "/guias/visitas-y-cuidado-personal" },
+  { name: "Marco teórico", path: "/guias/visitas-y-cuidado-personal/marco-teorico" },
+]);
+
 const VisitasCuidadoPersonalMarcoTeorico = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Cuidado personal y visitas: marco legal en Chile"
-        description="Guía sobre cuidado personal y relación directa y regular en Chile: marco legal, criterios judiciales, requisitos, visitas, incumplimientos y derechos de abuelos."
+        description="Guía sobre cuidado personal y relación directa y regular en Chile: marco legal, criterios judiciales, requisitos, régimen de visitas y derechos de abuelos."
         robots="index,follow"
-        jsonLd={faqJsonLd}
+        jsonLd={[faqJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">
@@ -133,7 +141,7 @@ const VisitasCuidadoPersonalMarcoTeorico = () => {
                 marco legal, criterios judiciales, requisitos, régimen de visitas, incumplimientos,
                 modificaciones y derecho de los abuelos.
               </p>
-              <AuthorByline updatedAt="8 de agosto de 2026" />
+              <AuthorByline updatedAt="28 de agosto de 2026" />
             </div>
           </div>
         </header>
@@ -204,11 +212,20 @@ const VisitasCuidadoPersonalMarcoTeorico = () => {
                     2.1 Ley de tuición compartida
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 20.680 introdujo el principio de corresponsabilidad parental,
-                    eliminando la regla histórica que entregaba automáticamente el cuidado personal
-                    a la madre. Actualmente, la ley establece que ambos padres deben participar de
-                    manera activa, equitativa y permanente en la crianza de los hijos, vivan juntos
-                    o separados.
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1052090"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 20.680
+                    </a>{" "}
+                    introdujo el principio de corresponsabilidad parental, eliminando la regla
+                    histórica que entregaba automáticamente el cuidado personal a la madre.
+                    Actualmente, la ley establece que ambos padres deben participar de manera
+                    activa, equitativa y permanente en la crianza de los hijos, vivan juntos o
+                    separados.
                   </p>
                 </div>
               </div>
@@ -291,6 +308,17 @@ const VisitasCuidadoPersonalMarcoTeorico = () => {
                 La relación directa y regular es el derecho del niño a mantener contacto permanente
                 y significativo con el padre o madre con quien no vive. No constituye un favor del
                 cuidador, sino un derecho fundamental del hijo.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                Si tu caso también involucra pensión de alimentos, revisa nuestra{" "}
+                <Link to="/guias/pension-de-alimentos/marco-teorico" className="text-primary hover:underline">
+                  guía de pensión de alimentos
+                </Link>{" "}
+                y usa la{" "}
+                <Link to="/calculadora-pension" className="text-primary hover:underline">
+                  calculadora de pensión
+                </Link>{" "}
+                para estimar el monto.
               </p>
             </section>
 

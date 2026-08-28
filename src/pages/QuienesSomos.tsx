@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,13 +28,18 @@ const personJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Quiénes somos", path: "/quienes-somos" },
+]);
+
 const QuienesSomos = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Quiénes somos | Acuérdalo"
         description="Conoce a Michelle Alvarez Villalón, Abogada de Familia de la Universidad Andrés Bello, y el enfoque de Acuérdalo en derecho de familia en Chile."
-        jsonLd={personJsonLd}
+        jsonLd={[personJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">

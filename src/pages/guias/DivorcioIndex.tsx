@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,12 +12,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Divorcio", path: "/guias/divorcio" },
+]);
+
 const DivorcioIndex = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de divorcio en Chile | Acuérdalo"
         description="Guías sobre divorcio en Chile: tipos de divorcio, plazos, requisitos, compensación económica y efectos respecto de los hijos."
+        jsonLd={breadcrumbJsonLd}
       />
       <Navbar />
       <div className="pt-16">
@@ -63,8 +71,8 @@ const DivorcioIndex = () => {
             </h2>
             <ul className="text-primary space-y-2 text-sm">
               <li>
-                <Link className="hover:underline" to="/guias/divorcio/marco-teorico">
-                  Marco teórico del divorcio en Chile
+                <Link className="hover:underline" to="/divorcio-en-chile">
+                  Divorcio en Chile: requisitos, plazos y marco legal
                 </Link>
               </li>
             </ul>

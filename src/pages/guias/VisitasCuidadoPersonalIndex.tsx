@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,12 +12,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Visitas y cuidado personal", path: "/guias/visitas-y-cuidado-personal" },
+]);
+
 const VisitasCuidadoPersonalIndex = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Guías de visitas y cuidado personal | Acuérdalo"
         description="Guías sobre cuidado personal y relación directa y regular en Chile: corresponsabilidad parental, criterios judiciales y derechos de los hijos."
+        jsonLd={breadcrumbJsonLd}
       />
       <Navbar />
       <div className="pt-16">

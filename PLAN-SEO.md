@@ -269,14 +269,20 @@ sube, el despliegue no está sirviendo bien el HTML y hay que revisarlo antes de
 - [x] GSC: inspección de URL + solicitar reindexación — hecho (30/07/2026)
 
 ### Fase 2 — Contenido y confianza
-- [ ] Renombrar `/guias/divorcio/marco-teorico` → `/divorcio-en-chile` (+301)
-- [ ] Reescribir guía de divorcio con enfoque de usuario
-- [ ] Autor + credenciales + fecha en cada guía
-- [ ] Página "Quiénes somos"
-- [ ] Citas y enlaces a normativa (bcn.cl)
-- [ ] Datos estructurados: `Organization`, `LegalService`, `BreadcrumbList`, `FAQPage`
-- [ ] Enlazado interno calculadora ↔ guías
-- [ ] Revivir páginas `/servicios/*`
+- [x] Renombrar `/guias/divorcio/marco-teorico` → `/divorcio-en-chile` (código listo con stub de
+      redirect client-side + `noindex`; falta el 301 real en nginx del VPS, fuera de este repo)
+- [x] Reescribir guía de divorcio con enfoque de usuario
+- [x] Autor + credenciales + fecha en cada guía (fechas actualizadas al 28/08/2026)
+- [x] Página "Quiénes somos"
+- [x] Citas y enlaces a normativa (bcn.cl) en las 4 guías (divorcio, pensión, visitas, medidas)
+- [x] Datos estructurados: `Organization`/`LegalService` (home), `Person` (Quiénes somos),
+      `BreadcrumbList` (10 páginas), `FAQPage` (4 guías)
+- [x] Enlazado interno calculadora ↔ guías (bidireccional en las 4 guías principales)
+- [ ] Revivir páginas `/servicios/*` — **no iniciado**. Las 8 páginas (`src/pages/servicios/*`)
+      existen pero su contenido es literalmente "Texto pendiente..." placeholder, sin `<Seo>`,
+      sin breadcrumb ni autor. Publicarlas así reintroduciría el problema de contenido delgado
+      que motivó la Fase 1. Requiere redactar y verificar contenido legal real por cada servicio
+      antes de descomentar las rutas en `App.tsx`.
 
 ### Fase 3 — Crecimiento
 - [ ] Nuevas herramientas interactivas por tema

@@ -446,7 +446,7 @@ const CalculadoraPension = () => {
           utilizados por tribunales, pero siempre es recomendable revisar tu
           caso específico.
         </p>
-        <p className="pb-16">
+        <p className="pb-4">
           Si quieres entender en detalle cómo funciona la pensión de alimentos
           en Chile, revisa nuestra <br />
           <a
@@ -454,6 +454,28 @@ const CalculadoraPension = () => {
             className="text-primary underline"
           >
             guía completa sobre pensión de alimentos
+          </a>
+          .
+        </p>
+        <p className="pb-16 text-muted-foreground">
+          Si tu caso también involucra divorcio, cuidado personal o medidas de
+          protección, revisa también:{" "}
+          <a href="/divorcio-en-chile" className="text-primary underline">
+            divorcio en Chile
+          </a>
+          ,{" "}
+          <a
+            href="/guias/visitas-y-cuidado-personal/marco-teorico"
+            className="text-primary underline"
+          >
+            visitas y cuidado personal
+          </a>{" "}
+          y{" "}
+          <a
+            href="/guias/medidas-de-proteccion/marco-teorico"
+            className="text-primary underline"
+          >
+            medidas de protección
           </a>
           .
         </p>

@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -82,6 +83,13 @@ const faqJsonLd = {
   })),
 };
 
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Guías", path: "/guias" },
+  { name: "Medidas de protección", path: "/guias/medidas-de-proteccion" },
+  { name: "Marco teórico", path: "/guias/medidas-de-proteccion/marco-teorico" },
+]);
+
 const MedidasProteccionMarcoTeorico = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
@@ -89,7 +97,7 @@ const MedidasProteccionMarcoTeorico = () => {
         title="Medidas de protección de derechos en Chile"
         description="Guía sobre medidas de protección en Chile: concepto, marco legal, vulneración de derechos, inicio de causas, tipos de medidas y rol del curador ad litem."
         robots="index,follow"
-        jsonLd={faqJsonLd}
+        jsonLd={[faqJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">
@@ -133,7 +141,7 @@ const MedidasProteccionMarcoTeorico = () => {
                 derechos, inicio de causas, tipos de medidas, rol del curador ad litem y término de
                 la medida.
               </p>
-              <AuthorByline updatedAt="8 de agosto de 2026" />
+              <AuthorByline updatedAt="28 de agosto de 2026" />
             </div>
           </div>
         </header>
@@ -200,9 +208,18 @@ const MedidasProteccionMarcoTeorico = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">2.1 Tribunales de Familia</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 19.968 regula el procedimiento de protección, estableciendo las reglas
-                    procesales y las facultades del juez para intervenir cuando existe una
-                    vulneración de derechos.
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=229557"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 19.968
+                    </a>{" "}
+                    regula el procedimiento de protección, estableciendo las reglas procesales y
+                    las facultades del juez para intervenir cuando existe una vulneración de
+                    derechos.
                   </p>
                 </div>
                 <div>
@@ -210,9 +227,18 @@ const MedidasProteccionMarcoTeorico = () => {
                     2.2 Ley de garantías de la niñez
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 21.430 establece el deber del Estado, la familia y la sociedad de
-                    garantizar el desarrollo integral de niños, niñas y adolescentes, reconociéndolos
-                    como sujetos de derechos.
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1173643"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 21.430
+                    </a>{" "}
+                    establece el deber del Estado, la familia y la sociedad de garantizar el
+                    desarrollo integral de niños, niñas y adolescentes, reconociéndolos como
+                    sujetos de derechos.
                   </p>
                 </div>
                 <div>
@@ -228,9 +254,18 @@ const MedidasProteccionMarcoTeorico = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">2.4 Servicio Mejor Niñez</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    La Ley N° 21.302 crea el Servicio Nacional de Protección Especializada a la
-                    Niñez y Adolescencia, encargado de ejecutar los programas y medidas ordenadas por
-                    los tribunales.
+                    La{" "}
+                    <a
+                      href="https://www.bcn.cl/leychile/navegar?idNorma=1154203"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Ley N° 21.302
+                    </a>{" "}
+                    crea el Servicio Nacional de Protección Especializada a la Niñez y
+                    Adolescencia, encargado de ejecutar los programas y medidas ordenadas por los
+                    tribunales.
                   </p>
                 </div>
               </div>
@@ -397,6 +432,18 @@ const MedidasProteccionMarcoTeorico = () => {
               <p className="text-muted-foreground leading-relaxed mt-4">
                 El incumplimiento de una medida de protección constituye el delito de desacato y
                 puede acarrear penas privativas de libertad.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                Si tu caso también involucra cuidado personal o pensión de alimentos, revisa
+                nuestra{" "}
+                <Link to="/guias/visitas-y-cuidado-personal/marco-teorico" className="text-primary hover:underline">
+                  guía de visitas y cuidado personal
+                </Link>{" "}
+                y usa la{" "}
+                <Link to="/calculadora-pension" className="text-primary hover:underline">
+                  calculadora de pensión
+                </Link>{" "}
+                para estimar el monto.
               </p>
             </section>
 

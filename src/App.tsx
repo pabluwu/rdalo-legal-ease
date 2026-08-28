@@ -3,6 +3,7 @@ import Layout from "./Layout";
 import Index from "./pages/Index";
 import CalculadoraPension from "./pages/CalculadoraPension";
 import QuienesSomos from "./pages/QuienesSomos";
+import DivorcioEnChile from "./pages/DivorcioEnChile";
 import NotFound from "./pages/NotFound";
 import GuiasIndex from "./pages/guias/GuiasIndex";
 import PensionAlimentosIndex from "./pages/guias/PensionAlimentosIndex";
@@ -23,6 +24,7 @@ export const routes: RouteRecord[] = [
       { path: "calculadora-pension", Component: CalculadoraPension },
       { path: "calculadora-pension/:cantidadHijosParam", Component: CalculadoraPension },
       { path: "quienes-somos", Component: QuienesSomos },
+      { path: "divorcio-en-chile", Component: DivorcioEnChile },
       { path: "guias", Component: GuiasIndex },
       { path: "guias/pension-de-alimentos", Component: PensionAlimentosIndex },
       {
@@ -30,6 +32,7 @@ export const routes: RouteRecord[] = [
         Component: PensionAlimentosMarcoTeorico,
       },
       { path: "guias/divorcio", Component: DivorcioIndex },
+      // Ruta vieja: stub de redirect a /divorcio-en-chile (ver PLAN-SEO.md, falta 301 real en nginx)
       { path: "guias/divorcio/marco-teorico", Component: DivorcioMarcoTeorico },
       {
         path: "guias/visitas-y-cuidado-personal",
