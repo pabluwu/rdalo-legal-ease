@@ -67,7 +67,7 @@ const Footer = () => {
 
       <div className="max-w-6xl mx-auto mt-10 pt-6 border-t border-border">
         <p className="text-muted-foreground font-light text-sm text-center">
-          © {new Date().getFullYear()} Acuérdalo. Todos los derechos reservados.
+          © {__BUILD_YEAR__} Acuérdalo. Todos los derechos reservados.
         </p>
       </div>
     </footer>

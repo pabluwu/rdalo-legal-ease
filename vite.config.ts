@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  // Congela el año en build: evaluarlo en runtime da un valor distinto en el HTML
+  // prerenderizado y en el cliente, lo que rompe la hidratación (React #418).
+  define: {
+    __BUILD_YEAR__: JSON.stringify(new Date().getFullYear()),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

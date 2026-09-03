@@ -9,7 +9,6 @@ import GuiasIndex from "./pages/guias/GuiasIndex";
 import PensionAlimentosIndex from "./pages/guias/PensionAlimentosIndex";
 import PensionAlimentosMarcoTeorico from "./pages/guias/PensionAlimentosMarcoTeorico";
 import DivorcioIndex from "./pages/guias/DivorcioIndex";
-import DivorcioMarcoTeorico from "./pages/guias/DivorcioMarcoTeorico";
 import VisitasCuidadoPersonalIndex from "./pages/guias/VisitasCuidadoPersonalIndex";
 import VisitasCuidadoPersonalMarcoTeorico from "./pages/guias/VisitasCuidadoPersonalMarcoTeorico";
 import MedidasProteccionIndex from "./pages/guias/MedidasProteccionIndex";
@@ -33,7 +32,6 @@ export const routes: RouteRecord[] = [
       },
       { path: "guias/divorcio", Component: DivorcioIndex },
       // Ruta vieja: stub de redirect a /divorcio-en-chile (ver PLAN-SEO.md, falta 301 real en nginx)
-      { path: "guias/divorcio/marco-teorico", Component: DivorcioMarcoTeorico },
       {
         path: "guias/visitas-y-cuidado-personal",
         Component: VisitasCuidadoPersonalIndex,

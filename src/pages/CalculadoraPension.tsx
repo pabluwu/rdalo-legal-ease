@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AsistenteCalculadora from "@/components/AsistenteCalculadora";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -342,9 +343,6 @@ const CalculadoraPension = () => {
                 Ver mi cálculo ahora
               </Button>
 
-              <p className="text-xs text-muted-foreground text-center font-medium animate-pulse">
-                ⚡️ {Math.floor(Math.random() * 20) + 80} personas calculando ahora
-              </p>
             </div>
           </motion.div>
         </div>
@@ -480,6 +478,16 @@ const CalculadoraPension = () => {
           .
         </p>
       </section>
+
+      {/* Solo tras calcular: en ese momento la persona ya tiene una cifra concreta
+          sobre la que preguntar, y el contexto del cálculo da respuestas de su caso. */}
+      {resultado !== null && (
+        <AsistenteCalculadora
+          montoCalculado={resultado}
+          cantidadHijos={cantidadHijos}
+          ingresoMensual={Number(ingresosPadre) || undefined}
+        />
+      )}
 
       <div className="mt-4 text-center mb-8">
         <p className="mb-4 text-muted-foreground">
