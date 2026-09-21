@@ -363,29 +363,40 @@ septiembre.
   de E-E-A-T que el diagnóstico señalaba como bloqueo en contenido YMYL.
 - `public/sitemap.xml` reescrito con las 8 URLs y `lastmod` real.
 
-### 8.3 Pendiente en nginx del VPS (fuera de este repo)
+### 8.3 nginx del VPS — aplicado (21/09/2026)
 
-Deben aplicarse **antes** del deploy del código, o esas URLs devolverán 404 en la ventana intermedia.
+**Hallazgo:** el 301 de `/guias/divorcio/marco-teorico` que ya funcionaba **no estaba en nginx, sino
+en Cloudflare**. Se comprobó pidiendo la URL al origen (`curl -H "Host: acuerdalo.cl" https://127.0.0.1/...`):
+el origen devolvía 200 y el público 301. La capa de redirecciones vivía en Cloudflare.
+
+Se decidió poner las nuevas en **nginx**, para que el origen sea la fuente de verdad y quien lea la
+config del servidor las vea. La de divorcio queda duplicada en ambos sitios a propósito: es
+inofensiva y sirve de red si la de Cloudflare desaparece.
+
+Aplicado en `/etc/nginx/sites-available/acuerdalo.conf` (copia previa en `.bak-20260921-182819`),
+reemplazando el bloque que alimentaba la ruta paramétrica:
 
 ```nginx
-# Consolidación de guías: el contenido largo vive ahora en la URL de categoría
-location = /guias/pension-de-alimentos/marco-teorico        { return 301 /guias/pension-de-alimentos; }
-location = /guias/visitas-y-cuidado-personal/marco-teorico  { return 301 /guias/visitas-y-cuidado-personal; }
-location = /guias/medidas-de-proteccion/marco-teorico       { return 301 /guias/medidas-de-proteccion; }
-location = /guias/divorcio                                  { return 301 /divorcio-en-chile; }
-
-# La ruta paramétrica de la calculadora ya no existe en la app. Hoy hay una regla
-# que sirve /calculadora-pension/index.html para cualquier subruta: hay que
-# reemplazarla por este 301, o quedará sirviendo HTML que React no puede hidratar.
-location ^~ /calculadora-pension/ { return 301 /calculadora-pension; }
+location ^~ /calculadora-pension/            { return 301 https://acuerdalo.cl/calculadora-pension; }
+location = /guias/pension-de-alimentos/marco-teorico       { return 301 https://acuerdalo.cl/guias/pension-de-alimentos; }
+location = /guias/visitas-y-cuidado-personal/marco-teorico { return 301 https://acuerdalo.cl/guias/visitas-y-cuidado-personal; }
+location = /guias/medidas-de-proteccion/marco-teorico      { return 301 https://acuerdalo.cl/guias/medidas-de-proteccion; }
+location = /guias/divorcio/marco-teorico     { return 301 https://acuerdalo.cl/divorcio-en-chile; }
+location = /guias/divorcio                   { return 301 https://acuerdalo.cl/divorcio-en-chile; }
 ```
 
-`/guias/medidas-de-proteccion/marco-teorico` tenía 15 impresiones en posición 69: ese 301 no es
-opcional.
+El bloque que había antes —`location /calculadora-pension/ { try_files ... /calculadora-pension/index.html; }`—
+era el que reintroducía el bug de hidratación desde el servidor: servía el HTML de la calculadora
+para cualquier subruta, y React renderizaba otra cosa.
 
-⚠️ **`deploy.yml` hace `rsync` sin `--delete`**, así que los HTML de las URLs eliminadas seguirán en
-`/var/www/acuerdalo/`. Los `location =` de arriba tienen prioridad sobre los archivos estáticos, así
-que el 301 gana igualmente, pero conviene limpiar el directorio y añadir `--delete` al rsync.
+Un `location =` gana sobre el `try_files` del bloque `/`, así que las reglas mandan aunque los HTML
+viejos sigan en disco. Verificado tras recargar: las 8 URLs del sitemap responden **200 directo**,
+las 7 URLs viejas dan **301 en un solo salto**, una URL inventada da **404**, y
+`/calculadora-pension/2-hijos` ya carga **sin errores de hidratación**.
+
+⚠️ **Pendiente:** mergear la rama `fix/rsync-delete`. El webroot acumulaba 5 HTML del build del 3 de
+septiembre, 9 manifiestos y 31 assets de builds viejos. Con los 301 puestos ya no hacen daño, pero
+conviene limpiarlos.
 
 ### 8.4 Criterio de cálculo (resuelto)
 
