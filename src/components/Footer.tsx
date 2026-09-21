@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const guideLinks = [
   { to: "/calculadora-pension", label: "Calculadora de pensión de alimentos" },
   { to: "/guias/pension-de-alimentos", label: "Guías de pensión de alimentos" },
-  { to: "/guias/divorcio", label: "Guías de divorcio" },
+  { to: "/divorcio-en-chile", label: "Guías de divorcio" },
   { to: "/guias/visitas-y-cuidado-personal", label: "Guías de visitas y cuidado personal" },
   { to: "/guias/medidas-de-proteccion", label: "Guías de medidas de protección" },
 ];

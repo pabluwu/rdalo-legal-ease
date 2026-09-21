@@ -9,10 +9,13 @@ import HowWeWork from "@/components/HowWeWork";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { ORG_ID } from "@/seo/entities";
+import AsistenteLegal from "@/components/AsistenteLegal";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "LegalService",
+  "@id": ORG_ID,
   name: "Acuérdalo",
   url: "https://acuerdalo.cl",
   image: "https://acuerdalo.cl/og-image.jpg",
@@ -63,6 +66,7 @@ const Index = () => {
         <section id="faq">
           <FAQ />
         </section>
+        <AsistenteLegal tema="general" />
         <HowWeWork />
         <section id="contacto">
           <FinalCTA />

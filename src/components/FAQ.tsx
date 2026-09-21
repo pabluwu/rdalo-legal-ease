@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Accordion,
@@ -40,6 +41,13 @@ const faqs = [
             pensión y luego gestionar el <strong>cobro de la deuda.</strong>
           </li>
         </ul>
+        <p className="mt-4">
+          Cómo se calcula, los mínimos legales y el procedimiento de cobro están en{" "}
+          <Link to="/guias/pension-de-alimentos" className="text-primary underline">
+            la guía de pensión de alimentos
+          </Link>
+          .
+        </p>
       </>
     ),
   },
@@ -69,6 +77,13 @@ const faqs = [
             régimen de visitas.
           </li>
         </ul>
+        <p className="mt-4">
+          El detalle de cómo se fija y se hace cumplir un régimen está en{" "}
+          <Link to="/guias/visitas-y-cuidado-personal" className="text-primary underline">
+            la guía de visitas y cuidado personal
+          </Link>
+          .
+        </p>
       </>
     ),
   },
@@ -85,6 +100,13 @@ const faqs = [
           el Tribunal de Familia. Este procedimiento permite ajustar el monto
           cuando cambian las circunstancias del hijo o del padre/madre que paga
           la pensión.
+        </p>
+        <p className="mt-4">
+          Para estimar el monto que correspondería hoy, usa{" "}
+          <Link to="/calculadora-pension" className="text-primary underline">
+            la calculadora de pensión de alimentos
+          </Link>
+          .
         </p>
       </>
     ),
@@ -123,6 +145,13 @@ const faqs = [
             separación.
           </li> */}
         </ul>
+        <p className="mt-4">
+          Los tres tipos de divorcio, sus plazos y la compensación económica están en{" "}
+          <Link to="/divorcio-en-chile" className="text-primary underline">
+            la guía de divorcio en Chile
+          </Link>
+          .
+        </p>
       </>
     ),
   },
@@ -158,6 +187,13 @@ const faqs = [
           El tribunal evalúa el interés superior del niño, su entorno, vínculo
           con cada progenitor y las condiciones de cuidado antes de decidir.
         </p>
+        <p className="mt-4">
+          Los criterios que pesan en el tribunal están en{" "}
+          <Link to="/guias/visitas-y-cuidado-personal" className="text-primary underline">
+            la guía de cuidado personal
+          </Link>
+          .
+        </p>
       </>
     ),
   },
@@ -184,6 +220,13 @@ const faqs = [
             el proceso judicial en estos casos.
           </li>
         </ul>
+        <p className="mt-4">
+          El paso a paso completo, incluida la mediación, está en{" "}
+          <Link to="/guias/pension-de-alimentos" className="text-primary underline">
+            la guía de pensión de alimentos
+          </Link>
+          .
+        </p>
       </>
     ),
   },
@@ -224,7 +267,18 @@ const FAQ = () => {
                 <AccordionTrigger className="text-left text-foreground hover:text-primary hover:no-underline py-5">
                   <span className="text-lg font-medium">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
+                {/*
+                  forceMount: sin esto Radix no monta el contenido de los items
+                  cerrados, asi que las seis respuestas del FAQ —unas mil palabras,
+                  y los enlaces internos a las guias— no aparecian en el HTML
+                  prerenderizado. Montado siempre y oculto por CSS cuando esta
+                  cerrado, el rastreador lo ve y el usuario sigue viendo el
+                  acordeon igual.
+                */}
+                <AccordionContent
+                  forceMount
+                  className="text-muted-foreground pb-5"
+                >
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

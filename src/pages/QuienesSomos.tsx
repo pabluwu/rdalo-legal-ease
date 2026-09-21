@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import { AUTOR_ID, ORG_ID, SITE_URL } from "@/seo/entities";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
@@ -15,7 +16,9 @@ import {
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": AUTOR_ID,
   name: "Michelle Alvarez Villalón",
+  url: `${SITE_URL}/quienes-somos`,
   jobTitle: "Abogada de Familia",
   alumniOf: {
     "@type": "CollegeOrUniversity",
@@ -23,8 +26,9 @@ const personJsonLd = {
   },
   worksFor: {
     "@type": "LegalService",
+    "@id": ORG_ID,
     name: "Acuérdalo",
-    url: "https://acuerdalo.cl",
+    url: SITE_URL,
   },
 };
 
