@@ -42,5 +42,11 @@ jobs:
 
             # 3. Mover archivos y reiniciar Nginx
             # Nota: Usamos sudo aquí. Asegúrate de que el usuario ubuntu tenga permisos NOPASSWD
-            sudo rsync -av ~/acuerdalo-landing/rdalo-legal-ease/dist/ /var/www/acuerdalo/
+            # --delete: sin esto el webroot acumula los HTML de builds anteriores.
+            # Tras consolidar URLs en septiembre de 2026, /guias/*/marco-teorico y
+            # /guias/divorcio siguieron devolviendo 200 con el contenido viejo,
+            # duplicando las guias nuevas y con canonical apuntandose a si mismas.
+            # Se excluye .well-known para no romper la renovacion de certificados.
+            sudo rsync -av --delete --exclude='.well-known' \
+              ~/acuerdalo-landing/rdalo-legal-ease/dist/ /var/www/acuerdalo/
             sudo systemctl reload nginx
