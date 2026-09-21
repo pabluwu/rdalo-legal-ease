@@ -422,8 +422,18 @@ Se registra el **tramo**, nunca el sueldo exacto: sirve igual para decidir qué 
 página y qué tramos cubrir, sin guardar la situación económica de nadie. `aplica_minimo_legal` dice
 qué parte de la audiencia queda en el piso legal en vez de en un porcentaje de su sueldo.
 
-Queda pendiente crear el disparador y las variables en el contenedor de GTM para que el evento
-llegue a GA4; en el `dataLayer` ya está.
+Configurado en el contenedor `GTM-K6SPZ92X` (21/09/2026), **guardado pero sin publicar**:
+
+- 5 variables de capa de datos: `DLV - hijos`, `DLV - tramo_ingreso`, `DLV - tramo_resultado`,
+  `DLV - aplica_minimo_legal`, `DLV - es_pensionado`.
+- Activador de evento personalizado `CE - calculo_pension`.
+- Etiqueta `GA4 - calculo_pension` (Google Analytics: evento de GA4), con ID de medición
+  `{{GA4 Id}}` —la constante que ya existía— y los 5 parámetros mapeados.
+
+Pendiente: pulsar **Enviar** en GTM (mejor después del deploy del código, porque hasta entonces el
+evento no existe en el sitio en vivo) y registrar los 5 parámetros como **dimensiones
+personalizadas en GA4** (Administrar → Definiciones personalizadas), sin lo cual llegan al evento
+pero no se pueden segmentar en los informes.
 
 **Bug corregido de paso:** el estado del número de hijos declaraba `number` pero guardaba `string`
 (el input necesita texto para poder borrarse). Además de los tres errores de tipos, provocaba que
