@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calculator,
@@ -10,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import AsistenteCalculadora from "@/components/AsistenteCalculadora";
+import AsistenteLegal from "@/components/AsistenteLegal";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -25,55 +24,136 @@ import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Seo from "@/seo/Seo";
+import { pushDataLayer } from "@/analytics/gtm";
+import AuthorByline from "@/components/AuthorByline";
+import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
+import { buildArticleJsonLd } from "@/seo/articleJsonLd";
 
-const INGRESO_MINIMO_2025 = 539000; 
+// Fuente unica del ingreso minimo mensual: el calculo, la tabla de minimos, los
+// ejemplos y el JSON-LD de FAQ derivan todos de esta constante. Antes el codigo
+// usaba 539.000 y el texto decia 529.000, de modo que la pagina se contradecia a
+// si misma. Al cambiar este numero se actualiza toda la pagina.
+// Vigente desde el 21 de septiembre de 2026.
+const INGRESO_MINIMO = 553553;
+
+// Minimos legales por numero de hijos (Ley N 14.908): 40% de un ingreso minimo
+// para un hijo, 30% por cada hijo cuando son dos o mas.
+const porcentajeMinimoLegal = (hijos: number) =>
+  hijos === 1 ? 0.4 : 0.3 * hijos;
+
+/** Tope legal: la pension no puede superar el 50% de las rentas del alimentante. */
+const TOPE_LEGAL = 0.5;
+
+// Tramos para analitica. Se registra el rango, nunca la cifra exacta: sirve igual
+// para saber con que sueldos e ingresos se usa la calculadora, sin guardar la
+// situacion economica de nadie. El prefijo numerico es para que ordenen bien en
+// los informes.
+const tramoIngreso = (ingresos: number) => {
+  if (ingresos < INGRESO_MINIMO) return "1_bajo_el_minimo";
+  if (ingresos < 800_000) return "2_minimo_a_800k";
+  if (ingresos < 1_200_000) return "3_800k_a_1200k";
+  if (ingresos < 2_000_000) return "4_1200k_a_2000k";
+  if (ingresos < 3_000_000) return "5_2000k_a_3000k";
+  return "6_sobre_3000k";
+};
+
+const tramoMonto = (monto: number) => {
+  if (monto < 300_000) return "1_bajo_300k";
+  if (monto < 500_000) return "2_300k_a_500k";
+  if (monto < 800_000) return "3_500k_a_800k";
+  if (monto < 1_500_000) return "4_800k_a_1500k";
+  return "5_sobre_1500k";
+};
+
+const formatoCLP = (valor: number) =>
+  new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    minimumFractionDigits: 0,
+  }).format(Math.round(valor));
+
+/** Lo que da el calculo por hijo, antes de aplicar el tope. */
+const calculoPorHijoEnPesos = (hijos: number) =>
+  INGRESO_MINIMO * porcentajeMinimoLegal(hijos);
+
+/**
+ * Minimo aplicable en pesos para N hijos. El tope del 50% siempre prevalece,
+ * aunque el calculo por hijo de un porcentaje mayor, asi que desde dos hijos el
+ * piso queda fijado en el 50% de un ingreso minimo.
+ */
+const minimoEnPesos = (hijos: number) =>
+  INGRESO_MINIMO * Math.min(porcentajeMinimoLegal(hijos), TOPE_LEGAL);
+
+
+const faqs = [
+  {
+    question: "¿Cómo se saca el porcentaje de pensión alimenticia?",
+    answer:
+      `El porcentaje se calcula sobre los ingresos del demandado y las necesidades del hijo. La Ley N° 14.908 fija mínimos sobre el ingreso mínimo mensual (${formatoCLP(INGRESO_MINIMO)}): 40% de un ingreso mínimo para un hijo y 30% por cada hijo cuando son dos o más. Sobre ese cálculo prevalece siempre el tope del 50%, tanto sobre el mínimo como sobre las rentas del alimentante.`,
+  },
+  {
+    question: "¿Cuánto es el porcentaje de pensión alimenticia por 2 hijos?",
+    answer:
+      `Por dos hijos el cálculo da 30% de un ingreso mínimo por cada uno, es decir un 60% en total. Pero el tope del 50% siempre prevalece, así que el mínimo aplicable es ${formatoCLP(minimoEnPesos(2))} mensuales. Ese tope se mide sobre las rentas del alimentante: con un sueldo más alto la pensión sube hasta el 50% de ese sueldo.`,
+  },
+  {
+    question: "¿Cuánto es la pensión mínima por un hijo?",
+    answer:
+      `Para un hijo el mínimo legal es el 40% de un ingreso mínimo mensual, esto es ${formatoCLP(minimoEnPesos(1))} al mes. El tribunal puede fijar un monto mayor si los ingresos del alimentante o las necesidades del hijo lo justifican.`,
+  },
+  {
+    question: "¿Qué ingresos se consideran para el cálculo?",
+    answer:
+      "Se consideran todos los ingresos: sueldo base, gratificaciones, bonos, horas extra, honorarios, e incluso rentas por arriendos o inversiones. El tribunal evalúa la capacidad económica total, no solo la liquidación de sueldo.",
+  },
+  {
+    question: "¿Qué incluye la pensión de alimentos?",
+    answer:
+      "Cubre lo necesario para la subsistencia y el desarrollo del hijo: alimentación, vestuario, salud, educación, vivienda y recreación básica. Los gastos extraordinarios, como una cirugía o la matrícula anual, suelen fijarse aparte y repartirse entre ambos padres.",
+  },
+  {
+    question: "¿Qué pasa si no me pagan la pensión de alimentos?",
+    answer:
+      "Se puede pedir la liquidación de la deuda ante el tribunal. El deudor ingresa al Registro Nacional de Deudores de Pensiones de Alimentos y proceden la retención de remuneraciones, la retención de la devolución de impuestos y apremios como el arraigo, el arresto nocturno y la suspensión de la licencia de conducir.",
+  },
+  {
+    question: "¿Se puede aumentar o rebajar la pensión después?",
+    answer:
+      "Sí. El monto no es definitivo: puede revisarse cuando cambian las circunstancias, por ejemplo si aumentan las necesidades del hijo, mejora la situación económica del alimentante o este pierde su trabajo. Requiere mediación previa y prueba documental del cambio.",
+  },
+];
 
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "¿Cómo se saca el porcentaje de pensión alimenticia?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "El porcentaje se calcula sobre los ingresos del demandado y las necesidades del hijo. En Chile, la ley establece montos mínimos basados en el sueldo mínimo ($529.000 en 2025): para un hijo es el 40% de un ingreso mínimo y para dos o más es el 30% por cada uno, con un tope máximo legal del 50% de las rentas del alimentante.",
-      },
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
     },
-    {
-      "@type": "Question",
-      name: "¿Cuánto es el porcentaje de pensión alimenticia por 2 hijos?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Para dos o más hijos, el monto mínimo legal es el 30% de un ingreso mínimo mensual por cada hijo. Con el sueldo mínimo actual de $529.000, la pensión mínima total por dos hijos es de $317.400, siempre que este monto no supere el límite máximo del 50% de los ingresos totales del padre o madre que paga.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "¿Qué ingresos se consideran para el cálculo?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Se deben considerar todos los ingresos, incluyendo sueldo base, gratificaciones, bonos, honorarios e incluso rentas por arriendos o inversiones. El tribunal evaluará la capacidad económica total para fijar el monto definitivo.",
-      },
-    },
-  ],
+  })),
 };
 
-const CalculadoraPension = () => {
-  const { cantidadHijosParam } = useParams<{ cantidadHijosParam?: string }>();
-  const [cantidadHijos, setCantidadHijos] = useState<number>(1);
+const articleJsonLd = buildArticleJsonLd({
+  headline: "Calculadora de pensión de alimentos en Chile",
+  description:
+    "Cómo se calcula la pensión de alimentos en Chile: porcentajes por número de hijos, mínimos legales, tope del 50 %, qué ingresos se consideran y qué incluye.",
+  path: "/calculadora-pension",
+  datePublished: "2025-12-05",
+  dateModified: "2026-09-21",
+});
 
-  useEffect(() => {
-    if (cantidadHijosParam) {
-      const match = cantidadHijosParam.match(/^(\d+)/);
-      if (match) {
-        const num = parseInt(match[1]);
-        if (num > 0 && num <= 10) {
-          setCantidadHijos(num);
-        }
-      }
-    }
-  }, [cantidadHijosParam]);
+const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Calculadora de pensión de alimentos", path: "/calculadora-pension" },
+]);
+
+const CalculadoraPension = () => {
+  const [hijosInput, setHijosInput] = useState<string>("1");
+  /** Valor normalizado (1-10) que usa todo lo que no es el propio input. */
+  const cantidadHijos = Math.min(Math.max(parseInt(hijosInput) || 1, 1), 10);
 
   const [ingresosPadre, setIngresosPadre] = useState<string>("");
   const [esPensionado, setEsPensionado] = useState<string>("no");
@@ -84,18 +164,12 @@ const CalculadoraPension = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const isSpecificSearch = cantidadHijosParam && /^\d+/.test(cantidadHijosParam);
-  const dynamicTitle = isSpecificSearch 
-    ? `Calculadora de Pensión por ${cantidadHijos} Hijos en Chile (2026)` 
-    : "Calculadora Ley Papito Corazón: cálculo exacto de pensión";
-  
-  const dynamicH1 = isSpecificSearch
-    ? `Calculadora de Pensión por ${cantidadHijos} Hijos`
-    : "Calculadora de Pensión de Alimentos: Porcentajes Pensión Alimenticia";
+  const dynamicTitle = "Calculadora Ley Papito Corazón: cálculo exacto de pensión";
 
-  const dynamicDescription = isSpecificSearch
-    ? `Obtén el cálculo exacto de pensión por ${cantidadHijos} hijos según la Ley Papito Corazón 2026. Calcula en segundos el monto legal según el sueldo mínimo en Chile.`
-    : "Calcula cuánta pensión corresponde según tu sueldo con nuestra tabla 2026 actualizada. Resultados instantáneos bajo la Ley Papito Corazón. ¡Entra aquí!";
+  const dynamicH1 = "Calculadora de Pensión de Alimentos: Porcentajes Pensión Alimenticia";
+
+  const dynamicDescription =
+    "Calcula cuánta pensión corresponde según tu sueldo con nuestra tabla 2026 actualizada. Resultados instantáneos bajo la Ley Papito Corazón. ¡Entra aquí!";
 
   const calcularPension = () => {
     // Verificar si es pensionado sin ingresos extra
@@ -115,25 +189,30 @@ const CalculadoraPension = () => {
       return;
     }
 
-    let porcentaje: number;
-    if (cantidadHijos === 1) {
-      porcentaje = 0.4; // 40% para 1 hijo
-    } else {
-      porcentaje = 0.3 * cantidadHijos; // 30% por cada hijo
-    }
-
-    // Limitar al 50% máximo
-    const porcentajeMaximo = 0.5;
-    const porcentajeFinal = Math.min(porcentaje, porcentajeMaximo);
+    const porcentajeFinal = Math.min(porcentajeMinimoLegal(cantidadHijos), TOPE_LEGAL);
 
     const pensionCalculada = ingresos * porcentajeFinal;
-    const pensionMinima = INGRESO_MINIMO_2025 * porcentajeFinal;
+    const pensionMinima = INGRESO_MINIMO * porcentajeFinal;
 
     // La pensión no puede ser menor al porcentaje del ingreso mínimo
     const pensionFinal = Math.max(pensionCalculada, pensionMinima);
 
     setResultado(pensionFinal);
     setShowModal(true);
+
+    // Un calculo no se persiste en ninguna parte: es estado de cliente. Sin este
+    // evento no habia forma de saber cuantas visitas a la calculadora llegan a
+    // calcular, ni con cuantos hijos ni en que tramo de ingresos.
+    pushDataLayer({
+      event: "calculo_pension",
+      hijos: cantidadHijos,
+      tramo_ingreso: tramoIngreso(ingresos),
+      tramo_resultado: tramoMonto(pensionFinal),
+      // true cuando gana tan poco que el resultado lo fija el minimo legal y no
+      // su sueldo: dice cuanta de la audiencia esta en el piso.
+      aplica_minimo_legal: pensionMinima > pensionCalculada,
+      es_pensionado: esPensionado === "si",
+    });
   };
 
   const handleWizardSubmit = async (data: WizardData) => {
@@ -202,7 +281,7 @@ const CalculadoraPension = () => {
         title={dynamicTitle}
         description={dynamicDescription}
         canonical="https://acuerdalo.cl/calculadora-pension"
-        jsonLd={faqSchema}
+        jsonLd={[articleJsonLd, faqSchema, breadcrumbJsonLd]}
       />
       <Navbar />
 
@@ -217,6 +296,13 @@ const CalculadoraPension = () => {
             <h1 className="text-2xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
               {dynamicH1}
             </h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
+              Calcula el mínimo legal según el número de hijos y los ingresos, con los
+              porcentajes y el tope que fija la Ley N° 14.908.
+            </p>
+            <div className="flex justify-center">
+              <AuthorByline updatedAt="21 de septiembre de 2026" />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -244,18 +330,14 @@ const CalculadoraPension = () => {
                   type="number"
                   min={1}
                   max={10}
-                  value={cantidadHijos}
+                  value={hijosInput}
                   onChange={(e) => {
                     // Permite borrar y escribir libremente
-                    setCantidadHijos(e.target.value);
+                    setHijosInput(e.target.value);
                   }}
                   onBlur={() => {
-                    let num = parseInt(cantidadHijos);
-            
-                    if (isNaN(num) || num < 1) num = 1;
-                    if (num > 10) num = 10;
-            
-                    setCantidadHijos(String(num));
+                    // Al salir del campo se escribe el valor ya normalizado
+                    setHijosInput(String(cantidadHijos));
                   }}
                   className="h-14 text-xl font-medium rounded-2xl bg-muted/30 border-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
@@ -349,145 +431,259 @@ const CalculadoraPension = () => {
       </section>
 
       {/* SEO content pushed lower */}
-      <section className="bg-muted/30 py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-center">
-              Guía Legal: ¿Como se saca el porcentaje de pension alimenticia?
-            </h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-card p-6 rounded-2xl border border-border">
-                <h3 className="font-bold mb-2">Porcentaje de pensión alimenticia por 3 hijos</h3>
-                <p className="text-sm text-muted-foreground">La ley chilena busca proteger el bienestar de los menores estableciendo topes y mínimos claros.</p>
-              </div>
-              <div className="bg-card p-6 rounded-2xl border border-border">
-                <h3 className="font-bold mb-2">Cálculo exacto 2026</h3>
-                <p className="text-sm text-muted-foreground">Basado en el sueldo mínimo actual de $529.000 y la Ley Papito Corazón.</p>
-              </div>
+      <section className="mt-8 mb-4 max-w-3xl mx-auto px-4 space-y-10">
+        <div className="space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Cómo se calcula la pensión de alimentos en Chile
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">
+            La pensión de alimentos se fija según dos cosas: las necesidades del hijo o
+            hija y la capacidad económica de quien debe pagarla. La{" "}
+            <a
+              href="https://www.bcn.cl/leychile/navegar?idNorma=27977"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Ley N° 14.908
+            </a>{" "}
+            no entrega una fórmula cerrada, pero sí un piso y un techo que el tribunal
+            debe respetar. Esta calculadora aplica esos dos límites.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">
+            Porcentajes de pensión alimenticia por número de hijos
+          </h3>
+          <p className="text-muted-foreground leading-relaxed">
+            El mínimo legal se mide sobre el ingreso mínimo mensual, hoy{" "}
+            {formatoCLP(INGRESO_MINIMO)}. Sobre ese piso el monto sube según los ingresos
+            reales del alimentante, siempre con el límite del 50 %, que prevalece en
+            cualquier caso.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+              <caption className="sr-only">
+                Mínimo legal de pensión de alimentos según número de hijos
+              </caption>
+              <thead className="bg-muted/50">
+                <tr>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    Número de hijos
+                  </th>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    Cálculo por hijo
+                  </th>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    Mínimo aplicable
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3, 4].map((hijos) => (
+                  <tr key={hijos} className="border-t border-border">
+                    <td className="p-3">
+                      {hijos} {hijos === 1 ? "hijo" : "hijos"}
+                    </td>
+                    <td className="p-3 text-muted-foreground">
+                      {Math.round(porcentajeMinimoLegal(hijos) * 100)} % de un ingreso mínimo
+                      {porcentajeMinimoLegal(hijos) > TOPE_LEGAL && (
+                        <span className="block text-xs">
+                          {formatoCLP(calculoPorHijoEnPesos(hijos))}, sobre el tope
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 font-medium">
+                      {formatoCLP(minimoEnPesos(hijos))}
+                      {porcentajeMinimoLegal(hijos) > TOPE_LEGAL && (
+                        <span className="block text-xs font-normal text-muted-foreground">
+                          tope del 50 %
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            El tope del 50 % siempre prevalece, aunque el cálculo por hijo dé un
+            porcentaje mayor. Por eso desde dos hijos el mínimo se detiene en{" "}
+            {formatoCLP(minimoEnPesos(2))}: sumar hijos no baja ese piso, pero tampoco lo
+            sube. Son montos mínimos, no esperables: el tope se mide sobre las rentas de
+            quien paga, así que con un sueldo más alto la pensión sube hasta el 50 % de
+            ese sueldo.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Dos ejemplos resueltos</h3>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h4 className="font-semibold mb-2">Un hijo, sueldo de {formatoCLP(800000)}</h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                El 40 % de {formatoCLP(800000)} son {formatoCLP(800000 * 0.4)}, por encima del
+                mínimo legal de {formatoCLP(minimoEnPesos(1))} y por debajo del tope del 50 %.
+                La referencia son {formatoCLP(800000 * 0.4)} mensuales.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h4 className="font-semibold mb-2">Dos hijos, sueldo de {formatoCLP(800000)}</h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                El 30 % por cada hijo daría un 60 %, pero el tope del 50 % prevalece: la
+                referencia son {formatoCLP(800000 * 0.5)} mensuales en total, repartidos entre
+                ambos hijos. Con tres o cuatro hijos y este mismo sueldo, el resultado es el
+                mismo, porque el tope ya está alcanzado.
+              </p>
             </div>
           </div>
         </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Qué ingresos se consideran</h3>
+          <p className="text-muted-foreground leading-relaxed">
+            No solo el sueldo base. El tribunal evalúa la capacidad económica completa:
+          </p>
+          <ul className="list-disc ml-5 space-y-2 text-muted-foreground">
+            <li>Sueldo líquido, gratificaciones, bonos y horas extra.</li>
+            <li>Honorarios y trabajos a boleta.</li>
+            <li>Rentas de arriendo, inversiones y utilidades de sociedades.</li>
+            <li>
+              Ingresos informales, que pueden acreditarse por movimientos bancarios,
+              nivel de vida o prueba testimonial.
+            </li>
+          </ul>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Qué incluye la pensión de alimentos</h3>
+          <p className="text-muted-foreground leading-relaxed">
+            Cubre lo necesario para la subsistencia y el desarrollo del hijo o hija:
+            alimentación, vestuario, salud, educación, vivienda y recreación básica. Los
+            gastos extraordinarios —una cirugía, la matrícula anual, un tratamiento
+            prolongado— no se entienden incluidos y suelen fijarse aparte, repartidos
+            entre ambos padres.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Qué pasa si no se paga</h3>
+          <p className="text-muted-foreground leading-relaxed">
+            El incumplimiento se persigue pidiendo la liquidación de la deuda al tribunal.
+            A partir de ahí operan el Registro Nacional de Deudores de Pensiones de
+            Alimentos, la retención de remuneraciones y de la devolución de impuestos, y
+            medidas de apremio como el arraigo, el arresto nocturno y la suspensión de la
+            licencia de conducir. La{" "}
+            <a
+              href="https://www.bcn.cl/leychile/navegar?idNorma=1181003"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Ley N° 21.389
+            </a>{" "}
+            reforzó estos mecanismos.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Cómo se tramita, paso a paso</h3>
+          <ol className="list-decimal ml-5 space-y-2 text-muted-foreground">
+            <li>
+              <strong className="text-foreground">Mediación previa obligatoria.</strong>{" "}
+              Antes de demandar hay que pasar por un centro de mediación familiar.
+            </li>
+            <li>
+              <strong className="text-foreground">Demanda ante el tribunal de familia</strong>{" "}
+              del domicilio del alimentario, si la mediación fracasa.
+            </li>
+            <li>
+              <strong className="text-foreground">Alimentos provisorios.</strong> El juez
+              puede fijar un monto desde el inicio, mientras se tramita la causa.
+            </li>
+            <li>
+              <strong className="text-foreground">Audiencia y prueba</strong> de ingresos y
+              necesidades.
+            </li>
+            <li>
+              <strong className="text-foreground">Sentencia</strong> que fija el monto
+              definitivo y su forma de pago.
+            </li>
+          </ol>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Se puede aumentar o rebajar después</h3>
+          <p className="text-muted-foreground leading-relaxed">
+            El monto no queda congelado. Puede revisarse cuando cambian las
+            circunstancias: si aumentan las necesidades del hijo, si mejora la situación
+            económica de quien paga o si esa persona pierde su trabajo. También requiere
+            mediación previa y prueba documental del cambio.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Preguntas frecuentes sobre el cálculo de pensión
+          </h2>
+          <div className="space-y-4">
+            {faqs.map((faq) => (
+              <div
+                key={faq.question}
+                className="rounded-xl border border-border bg-card p-5"
+              >
+                <h3 className="font-semibold mb-2">{faq.question}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-muted/30 p-5 space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Este cálculo es referencial. El tribunal puede fijar un monto distinto según
+            el nivel de vida del hijo, los gastos de educación y salud, y la capacidad
+            económica de ambos padres.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Para el detalle legal completo, revisa la{" "}
+            <a href="/guias/pension-de-alimentos" className="text-primary underline">
+              guía de pensión de alimentos
+            </a>
+            . Si tu caso también involucra{" "}
+            <a href="/divorcio-en-chile" className="text-primary underline">
+              divorcio
+            </a>
+            ,{" "}
+            <a
+              href="/guias/visitas-y-cuidado-personal"
+              className="text-primary underline"
+            >
+              visitas y cuidado personal
+            </a>{" "}
+            o{" "}
+            <a href="/guias/medidas-de-proteccion" className="text-primary underline">
+              medidas de protección
+            </a>
+            , tenemos guías para cada uno.
+          </p>
+        </div>
       </section>
 
-      <section className="mt-8 space-y-8 max-w-3xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold">
-          ¿Como se saca el porcentaje de pension alimenticia?
-        </h2>
-
-        <p>
-          En Chile, la pensión de alimentos se determina en base a los ingresos
-          del padre o madre que debe pagarla y las necesidades del hijo. La ley
-          establece porcentajes referenciales que los tribunales utilizan como
-          base para fijar el monto.
-        </p>
-
-        <h3 className="text-xl font-semibold">
-          Porcentaje de pensión alimenticia por 3 hijos
-        </h3>
-        <p>Como regla general, la pensión corresponde a:</p>
-        <ul className="list-disc ml-5 space-y-2">
-          <li>
-            <strong>1 hijo:</strong> hasta un 40% de los ingresos
-          </li>
-          <li>
-            <strong>2 o más hijos:</strong> aproximadamente un 30% por cada hijo
-          </li>
-          <li>
-            <strong>Tope máximo:</strong> 50% del ingreso total del demandado
-          </li>
-        </ul>
-
-        <h3 className="text-xl font-semibold">
-          Monto mínimo de pensión en Chile
-        </h3>
-        <p>
-          La pensión de alimentos no puede ser inferior a un porcentaje del
-          ingreso mínimo mensual. Esto asegura que, incluso si el demandado
-          declara bajos ingresos, exista un monto base para cubrir las
-          necesidades del menor.
-        </p>
-
-        <h3 className="text-xl font-semibold">Qué ingresos se consideran</h3>
-        <p>
-          Para calcular la pensión, se consideran todos los ingresos del
-          demandado, incluyendo sueldo, honorarios, arriendos, inversiones y
-          cualquier otra fuente de ingreso regular.
-        </p>
-
-        <h3 className="text-xl font-semibold">
-          Importante: cada caso es distinto
-        </h3>
-        <p>
-          Este cálculo es solo referencial. El tribunal puede ajustar el monto
-          según factores como el nivel de vida del menor, gastos educacionales,
-          salud y la capacidad económica de ambos padres.
-        </p>
-        <h3 className="text-xl font-semibold">
-          ¿Cuánto se paga realmente por pensión de alimentos en Chile?
-        </h3>
-
-        <p>
-          En la práctica, los tribunales de familia en Chile evalúan múltiples
-          factores, por lo que el monto puede variar considerablemente. Sin
-          embargo, muchas personas buscan respuestas como:
-        </p>
-
-        <ul className="list-disc ml-5 space-y-2">
-          <li>Cuánto pagar por pensión de alimentos con sueldo mínimo</li>
-          <li>Cuánto corresponde por 1 hijo o 2 hijos</li>
-          <li>Cómo se calcula si hay ingresos informales</li>
-        </ul>
-
-        <p>
-          Esta calculadora te entrega un estimado basado en criterios comunes
-          utilizados por tribunales, pero siempre es recomendable revisar tu
-          caso específico.
-        </p>
-        <p className="pb-4">
-          Si quieres entender en detalle cómo funciona la pensión de alimentos
-          en Chile, revisa nuestra <br />
-          <a
-            href="/guias/pension-de-alimentos/marco-teorico"
-            className="text-primary underline"
-          >
-            guía completa sobre pensión de alimentos
-          </a>
-          .
-        </p>
-        <p className="pb-16 text-muted-foreground">
-          Si tu caso también involucra divorcio, cuidado personal o medidas de
-          protección, revisa también:{" "}
-          <a href="/divorcio-en-chile" className="text-primary underline">
-            divorcio en Chile
-          </a>
-          ,{" "}
-          <a
-            href="/guias/visitas-y-cuidado-personal/marco-teorico"
-            className="text-primary underline"
-          >
-            visitas y cuidado personal
-          </a>{" "}
-          y{" "}
-          <a
-            href="/guias/medidas-de-proteccion/marco-teorico"
-            className="text-primary underline"
-          >
-            medidas de protección
-          </a>
-          .
-        </p>
-      </section>
-
-      {/* Solo tras calcular: en ese momento la persona ya tiene una cifra concreta
-          sobre la que preguntar, y el contexto del cálculo da respuestas de su caso. */}
-      {resultado !== null && (
-        <AsistenteCalculadora
-          montoCalculado={resultado}
-          cantidadHijos={cantidadHijos}
-          ingresoMensual={Number(ingresosPadre) || undefined}
-        />
-      )}
+      {/* Visible siempre, no solo tras calcular: escondido tras el resultado casi
+          nadie llegaba a verlo, y su cáscara estática es contenido indexable.
+          Cuando ya hay cifra se le pasa como contexto para respuestas del caso. */}
+      <AsistenteLegal
+        tema="calculadora"
+        montoCalculado={resultado ?? undefined}
+        cantidadHijos={resultado !== null ? cantidadHijos : undefined}
+        ingresoMensual={
+          resultado !== null ? Number(ingresosPadre) || undefined : undefined
+        }
+      />
 
       <div className="mt-4 text-center mb-8">
         <p className="mb-4 text-muted-foreground">

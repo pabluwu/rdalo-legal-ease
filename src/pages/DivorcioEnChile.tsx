@@ -3,6 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthorByline from "@/components/AuthorByline";
 import Seo from "@/seo/Seo";
+import { buildArticleJsonLd } from "@/seo/articleJsonLd";
+import AsistenteLegal from "@/components/AsistenteLegal";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
@@ -77,10 +79,19 @@ const faqJsonLd = {
   })),
 };
 
+
+const articleJsonLd = buildArticleJsonLd({
+  headline: "Divorcio en Chile: requisitos, plazos y marco legal",
+  description:
+    "Guía práctica del divorcio en Chile: 3 vías disponibles, plazos, paso a paso del proceso, qué pasa si tu cónyuge se niega, compensación económica y bienes.",
+  path: "/divorcio-en-chile",
+  datePublished: "2026-08-28",
+  dateModified: "2026-09-21",
+});
+
 const breadcrumbJsonLd = buildBreadcrumbJsonLd([
   { name: "Home", path: "/" },
   { name: "Guías", path: "/guias" },
-  { name: "Divorcio", path: "/guias/divorcio" },
   { name: "Divorcio en Chile", path: "/divorcio-en-chile" },
 ]);
 
@@ -91,7 +102,7 @@ const DivorcioEnChile = () => {
         title="Divorcio en Chile: requisitos, plazos y marco legal 2026"
         description="Guía práctica del divorcio en Chile: 3 vías disponibles, plazos, paso a paso del proceso, qué pasa si tu cónyuge se niega, compensación económica y bienes."
         robots="index,follow"
-        jsonLd={[faqJsonLd, breadcrumbJsonLd]}
+        jsonLd={[articleJsonLd, faqJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">
@@ -108,12 +119,6 @@ const DivorcioEnChile = () => {
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link to="/guias">Guías</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/guias/divorcio">Divorcio</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -136,7 +141,7 @@ const DivorcioEnChile = () => {
                 qué pasa si el otro cónyuge se niega y cómo se resuelven la compensación económica,
                 los bienes y los hijos.
               </p>
-              <AuthorByline updatedAt="28 de agosto de 2026" />
+              <AuthorByline updatedAt="21 de septiembre de 2026" />
             </div>
           </div>
         </header>
@@ -399,7 +404,7 @@ const DivorcioEnChile = () => {
               </p>
               <p className="text-muted-foreground leading-relaxed mt-4">
                 Si tu caso involucra pensión de alimentos, revisa también nuestra{" "}
-                <Link to="/guias/pension-de-alimentos/marco-teorico" className="text-primary hover:underline">
+                <Link to="/guias/pension-de-alimentos" className="text-primary hover:underline">
                   guía de pensión de alimentos
                 </Link>{" "}
                 y usa la{" "}
@@ -537,6 +542,8 @@ const DivorcioEnChile = () => {
             </div>
           </aside>
         </div>
+
+        <AsistenteLegal tema="divorcio" />
 
         <Footer />
       </div>

@@ -1,14 +1,12 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { pushDataLayer } from "@/analytics/gtm";
 
 const useGtmPageView = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const dataLayer = (window as any).dataLayer;
-    if (!Array.isArray(dataLayer)) return;
-
-    dataLayer.push({
+    pushDataLayer({
       event: "page_view",
       page_path: location.pathname + location.search,
       page_location: window.location.href,

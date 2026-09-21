@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
+import AsistenteLegal from "@/components/AsistenteLegal";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
@@ -49,8 +50,18 @@ const GuiasIndex = () => {
               Guías legales por categoría
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mt-4">
-              Navega por las categorías y encuentra guías claras, con base legal, organizadas para
-              facilitar tu búsqueda.
+              Cuatro guías de derecho de familia chileno, escritas para quien no es abogado:
+              pensión de alimentos, divorcio, cuidado personal y visitas, y medidas de
+              protección. Cada una parte del problema concreto —cuánto, cuándo, qué pasa
+              si— y cita la ley que lo respalda.
+            </p>
+            <p className="text-muted-foreground max-w-3xl mt-3">
+              Si no sabes por dónde empezar y tu caso es de pensión, la{" "}
+              <Link to="/calculadora-pension" className="text-primary hover:underline">
+                calculadora de pensión de alimentos
+              </Link>{" "}
+              te da una cifra de referencia en un minuto. Si tienes una duda puntual,
+              pregúntasela al asistente que está más abajo.
             </p>
           </div>
         </header>
@@ -62,21 +73,19 @@ const GuiasIndex = () => {
                 Pensión de alimentos
               </h2>
               <p className="text-muted-foreground mb-4">
-                Guías sobre marco legal, requisitos, cálculo y procedimiento en pensión de
-                alimentos.
+                Cuánto corresponde según el número de hijos, cuál es el mínimo legal y el tope
+                del 50 %, qué ingresos cuentan, cómo se tramita y qué ocurre cuando no se
+                paga.
               </p>
               <ul className="text-primary space-y-2 text-sm">
                 <li>
                   <Link className="hover:underline" to="/guias/pension-de-alimentos">
-                    Panorama general de la categoría
+                    Pensión de alimentos: marco legal, cálculo y procedimiento
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    className="hover:underline"
-                    to="/guias/pension-de-alimentos/marco-teorico"
-                  >
-                    Marco jurídico de la pensión de alimentos
+                  <Link className="hover:underline" to="/calculadora-pension">
+                    Calculadora de pensión de alimentos
                   </Link>
                 </li>
               </ul>
@@ -85,14 +94,11 @@ const GuiasIndex = () => {
             <article className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-3">Divorcio</h2>
               <p className="text-muted-foreground mb-4">
-                Guías para entender el proceso de divorcio y sus principales etapas.
+                Las tres vías de divorcio y sus plazos, qué hacer si el cónyuge se niega, cómo
+                se acredita el cese de convivencia y cómo funciona la compensación
+                económica.
               </p>
               <ul className="text-primary space-y-2 text-sm">
-                <li>
-                  <Link className="hover:underline" to="/guias/divorcio">
-                    Panorama general de la categoría
-                  </Link>
-                </li>
                 <li>
                   <Link className="hover:underline" to="/divorcio-en-chile">
                     Divorcio en Chile: requisitos, plazos y marco legal
@@ -106,20 +112,13 @@ const GuiasIndex = () => {
                 Visitas y cuidado personal
               </h2>
               <p className="text-muted-foreground mb-4">
-                Guías sobre relación directa y regular, y cuidado personal en familia.
+                Cómo se fija un régimen de visitas, qué criterios pesan en el cuidado personal,
+                qué pasa si no se cumple lo acordado y qué derechos tienen los abuelos.
               </p>
               <ul className="text-primary space-y-2 text-sm">
                 <li>
                   <Link className="hover:underline" to="/guias/visitas-y-cuidado-personal">
-                    Panorama general de la categoría
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="hover:underline"
-                    to="/guias/visitas-y-cuidado-personal/marco-teorico"
-                  >
-                    Marco teórico de cuidado personal y visitas
+                    Cuidado personal y relación directa y regular
                   </Link>
                 </li>
               </ul>
@@ -130,20 +129,14 @@ const GuiasIndex = () => {
                 Medidas de protección
               </h2>
               <p className="text-muted-foreground mb-4">
-                Guías sobre medidas de protección y su alcance en el ámbito familiar.
+                Qué es una vulneración de derechos, quién puede pedir una medida, cómo se inicia
+                la causa, qué medidas puede decretar el tribunal y el rol del curador ad
+                litem.
               </p>
               <ul className="text-primary space-y-2 text-sm">
                 <li>
                   <Link className="hover:underline" to="/guias/medidas-de-proteccion">
-                    Panorama general de la categoría
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="hover:underline"
-                    to="/guias/medidas-de-proteccion/marco-teorico"
-                  >
-                    Marco teórico de medidas de protección
+                    Medidas de protección por vulneración de derechos
                   </Link>
                 </li>
               </ul>
@@ -170,6 +163,8 @@ const GuiasIndex = () => {
             </a>
           </div>
         </section>
+
+        <AsistenteLegal tema="general" />
 
         <Footer />
       </div>

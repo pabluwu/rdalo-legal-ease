@@ -133,7 +133,7 @@ Toques de migración:
 | 7 | Devolver 404 real | nginx del VPS | ✅ Aplicado y confirmado en vivo (30/07/2026) |
 | 8 | robots.txt limpio | `public/robots.txt` | ✅ Hecho en código |
 | 9 | Sitemap al host canónico + `lastmod` | `public/sitemap.xml` | ✅ Hecho en código |
-| 10 | `og:image`, `og:url`, `og:site_name` | `index.html` / `Seo.tsx` | ⚠️ Tags conectados; falta subir el archivo `public/og-image.jpg` (1200×630, asset de diseño) |
+| 10 | `og:image`, `og:url`, `og:site_name` | `index.html` / `Seo.tsx` | ✅ Hecho. `public/og-image.jpg` existe y se sirve (verificado en vivo 21/09/2026) |
 | 11 | Canonicalizar la calculadora paramétrica | `CalculadoraPension.tsx` | ✅ Hecho en código |
 | 12 | Verificar en Search Console | GSC → Inspección de URL | ✅ Hecho (30/07/2026) — `/`, `/calculadora-pension` y `/guias/divorcio/marco-teorico` inspeccionadas y reindexación solicitada |
 
@@ -264,13 +264,13 @@ sube, el despliegue no está sirviendo bien el HTML y hay que revisarlo antes de
 - [x] `public/robots.txt` limpio, `Sitemap:` a `https://acuerdalo.cl/sitemap.xml`
 - [x] `public/sitemap.xml` con host canónico + `lastmod`
 - [x] Etiquetas `og:image` + `og:url` + `og:site_name` conectadas en `Seo.tsx`
-- [ ] Subir archivo real `public/og-image.jpg` (1200×630, asset de diseño)
+- [x] Subir archivo real `public/og-image.jpg` — verificado en vivo (21/09/2026)
 - [x] Canonical de `/calculadora-pension/:param` → `/calculadora-pension`
 - [x] GSC: inspección de URL + solicitar reindexación — hecho (30/07/2026)
 
 ### Fase 2 — Contenido y confianza
-- [x] Renombrar `/guias/divorcio/marco-teorico` → `/divorcio-en-chile` (código listo con stub de
-      redirect client-side + `noindex`; falta el 301 real en nginx del VPS, fuera de este repo)
+- [x] Renombrar `/guias/divorcio/marco-teorico` → `/divorcio-en-chile` — el 301 en nginx está
+      aplicado y confirmado en vivo (21/09/2026)
 - [x] Reescribir guía de divorcio con enfoque de usuario
 - [x] Autor + credenciales + fecha en cada guía (fechas actualizadas al 28/08/2026)
 - [x] Página "Quiénes somos"
@@ -290,3 +290,153 @@ sube, el despliegue no está sirviendo bien el HTML y hay que revisarlo antes de
 - [ ] Google Business Profile (si aplica)
 - [ ] Revisión mensual de Search Console
 </content>
+
+
+---
+
+## 8. Fase 4 — Reparar y consolidar (21 de septiembre de 2026)
+
+Revisión con los informes de GSC (20/06–19/09/2026), Cobertura y Microsoft Clarity.
+
+### 8.1 Qué decían los datos
+
+| Métrica | Informe julio | Informe 21/09 |
+|---|---:|---:|
+| Impresiones (91 d) | 747 | 405 |
+| Clics | 7 | 1 (desde Irlanda, pos. 4) |
+| Posición de `/calculadora-pension` | 18,4 | 40,5 |
+| Páginas indexadas | — | **5**, bajando desde 7 |
+| Páginas sin indexar | — | **12** |
+
+Tres hallazgos nuevos:
+
+1. **Hidratación rota, pero solo en `/calculadora-pension/:cantidadHijosParam`.** nginx servía el
+   HTML prerenderizado de `/calculadora-pension` mientras React renderizaba la variante
+   paramétrica, con H1 distinto. 10 errores de React por carga (#418/#423/#425). El resto de las
+   páginas hidrataba limpio: los 64 errores de JS que reporta Clarity son ~6-7 cargas de esa ruta,
+   no un problema de todo el sitio.
+2. **Canibalización.** Dos URLs por tema: un índice de 248–311 palabras y una guía de ~1.300. Google
+   indexaba la equivocada (en pensión rankeaba el índice de 275 palabras) o ninguna.
+3. **El tráfico real viene de Bing.** Clarity: Bing 70 sesiones, Yahoo 15, **Google 2**. Y convierte:
+   4 envíos de formulario sobre 81 sesiones reales. El embudo funciona; lo roto es la adquisición
+   desde Google.
+
+Advertencia de lectura: el commit `945ff4c` (02/09) documenta que el CI publicó código viejo *"de
+julio a septiembre"*. El contenido de Fase 2 pudo tener exposición real recién desde el 2 de
+septiembre.
+
+### 8.2 Qué se hizo en el código
+
+- **Eliminada la ruta `/calculadora-pension/:cantidadHijosParam`.** No estaba enlazada desde ninguna
+  parte, su canonical apuntaba a `/calculadora-pension` (así que nunca podría rankear) y era la
+  única fuente de errores de hidratación. También eliminaba la superficie infinita de soft-404
+  (`/calculadora-pension/99-hijos` devolvía 200).
+- **Consolidación de 12 URLs a 8.** El contenido largo de cada `*/marco-teorico` pasó a vivir en la
+  URL de categoría, que ya tenía historial en Google. `/guias/divorcio` desaparece en favor de
+  `/divorcio-en-chile`.
+- **Calculadora expandida** de 508 a ~1.210 palabras, con las secciones que piden las consultas de
+  GSC: tabla de mínimos por número de hijos, ejemplos resueltos, qué ingresos cuentan, qué incluye
+  la pensión, qué pasa si no se paga, tramitación paso a paso, aumento y rebaja. Más `AuthorByline`,
+  `BreadcrumbList` y citas a bcn.cl.
+- **Asistente de IA visible.** `AsistenteCalculadora` → `AsistenteLegal`, con prop `tema`. Deja de
+  estar condicionado a `resultado !== null` y aparece en las 6 páginas de contenido más `/guias`.
+  Su cáscara (titular, intro, sugerencias, descargo) se prerenderiza: antes eran 0 palabras en el
+  HTML servido.
+- **Fuente única para el ingreso mínimo.** El código usaba 539.000 y el texto 529.000; el JSON-LD de
+  FAQ afirmaba un mínimo por dos hijos que el propio cálculo contradecía. Ahora todo deriva de la
+  constante `INGRESO_MINIMO`, actualizada a **553.553** (vigente desde el 21/09/2026). Al cambiar
+  ese número se actualizan tabla, prosa, ejemplos y datos estructurados a la vez.
+- **Las respuestas del FAQ de la home no llegaban al rastreador.** Radix `Accordion` no monta el
+  contenido de los items cerrados, así que unas 600 palabras de `src/components/FAQ.tsx` —las seis
+  respuestas completas— no existían en el HTML prerenderizado. Con `forceMount` y ocultación por
+  CSS la home pasa de **576 a 1.179 palabras** sin cambiar nada de lo que ve el usuario. Se pierde
+  la animación de cierre del acordeón; la de apertura se mantiene.
+- **La home no tenía ni un enlace interno en su cuerpo.** Todos los enlaces vivían en navbar y
+  footer. Las seis respuestas del FAQ tratan justo los temas de las guías, así que cada una enlaza
+  ahora a la suya: 4 destinos distintos desde la página con mejor posición del sitio.
+- **Autoría en datos estructurados.** El sitio firmaba cada guía de forma visible con
+  `AuthorByline`, pero para un buscador las guías no tenían autor. Nuevo `src/seo/articleJsonLd.ts`:
+  las 4 guías y la calculadora declaran `Article` con `author`, `datePublished` (fecha real, del
+  historial de git) y `dateModified` (la misma que muestra la firma visible). Nuevo
+  `src/seo/entities.ts` con `@id` estables, de modo que el `Person` de /quienes-somos y el
+  `LegalService` de la home son las mismas entidades que firman y publican las guías. Es la señal
+  de E-E-A-T que el diagnóstico señalaba como bloqueo en contenido YMYL.
+- `public/sitemap.xml` reescrito con las 8 URLs y `lastmod` real.
+
+### 8.3 Pendiente en nginx del VPS (fuera de este repo)
+
+Deben aplicarse **antes** del deploy del código, o esas URLs devolverán 404 en la ventana intermedia.
+
+```nginx
+# Consolidación de guías: el contenido largo vive ahora en la URL de categoría
+location = /guias/pension-de-alimentos/marco-teorico        { return 301 /guias/pension-de-alimentos; }
+location = /guias/visitas-y-cuidado-personal/marco-teorico  { return 301 /guias/visitas-y-cuidado-personal; }
+location = /guias/medidas-de-proteccion/marco-teorico       { return 301 /guias/medidas-de-proteccion; }
+location = /guias/divorcio                                  { return 301 /divorcio-en-chile; }
+
+# La ruta paramétrica de la calculadora ya no existe en la app. Hoy hay una regla
+# que sirve /calculadora-pension/index.html para cualquier subruta: hay que
+# reemplazarla por este 301, o quedará sirviendo HTML que React no puede hidratar.
+location ^~ /calculadora-pension/ { return 301 /calculadora-pension; }
+```
+
+`/guias/medidas-de-proteccion/marco-teorico` tenía 15 impresiones en posición 69: ese 301 no es
+opcional.
+
+⚠️ **`deploy.yml` hace `rsync` sin `--delete`**, así que los HTML de las URLs eliminadas seguirán en
+`/var/www/acuerdalo/`. Los `location =` de arriba tienen prioridad sobre los archivos estáticos, así
+que el 301 gana igualmente, pero conviene limpiar el directorio y añadir `--delete` al rsync.
+
+### 8.4 Criterio de cálculo (resuelto)
+
+**El tope del 50 % siempre prevalece, aunque el cálculo por hijo dé un porcentaje mayor.** Criterio
+confirmado por Michelle Alvarez el 21/09/2026.
+
+Consecuencia: desde dos hijos el mínimo aplicable se detiene en el 50 % de un ingreso mínimo
+(hoy $276.777) y sumar hijos no lo mueve. El tope se mide sobre las rentas del alimentante, así que
+con un sueldo más alto la pensión sube hasta el 50 % de ese sueldo.
+
+La fórmula de `calcularPension()` ya lo hacía. Lo que hubo que corregir fue el texto: la tabla de
+mínimos, la nota que la acompaña, el ejemplo de dos hijos y dos respuestas del `FAQPage` afirmaban
+mínimos sin topar, de modo que la página contradecía a su propia calculadora (decía que el mínimo
+por 3 hijos eran $498.198 y entregaba $400.000 con un sueldo de $800.000). La tabla ahora muestra
+las dos cifras —el cálculo por hijo y el mínimo aplicable tras el tope— para que el mecanismo se
+entienda y no parezca un error que 2, 3 y 4 hijos compartan el mismo piso.
+
+### 8.5 Medición de la calculadora
+
+Un cálculo no se persistía en ninguna parte: `calcularPension()` es estado de cliente y no hace
+ninguna llamada de red. El dato solo llegaba a la base de rebote —dentro del texto libre de
+`contact_messages` si la persona completaba la pre-evaluación, o en `ai_conversations.contexto_calculo`
+si preguntaba al asistente—. Con 88 de 123 sesiones de Clarity aterrizando en la calculadora, no
+había forma de saber cuántas llegaban a calcular.
+
+Se añade un evento a GTM (`src/analytics/gtm.ts`), sin backend ni tabla nueva:
+
+```js
+{ event: "calculo_pension", hijos, tramo_ingreso, tramo_resultado,
+  aplica_minimo_legal, es_pensionado }
+```
+
+Se registra el **tramo**, nunca el sueldo exacto: sirve igual para decidir qué ejemplos poner en la
+página y qué tramos cubrir, sin guardar la situación económica de nadie. `aplica_minimo_legal` dice
+qué parte de la audiencia queda en el piso legal en vez de en un porcentaje de su sueldo.
+
+Queda pendiente crear el disparador y las variables en el contenedor de GTM para que el evento
+llegue a GA4; en el `dataLayer` ya está.
+
+**Bug corregido de paso:** el estado del número de hijos declaraba `number` pero guardaba `string`
+(el input necesita texto para poder borrarse). Además de los tres errores de tipos, provocaba que
+`numeroHijos === 1` fuera falso y el modal ofreciera compartir *"por 1 hijos"*. Ahora el input guarda
+el texto y el resto de la página usa un valor derivado ya normalizado a 1-10.
+
+### 8.6 Fuera del código
+
+- **Bing Webmaster Tools + IndexNow.** Es el hallazgo más barato del informe: Bing y Yahoo aportan
+  el 99 % del tráfico real y nadie lo está cultivando.
+- **Leer la tabla `ai_conversations`** (repo `api-acuerdalo-legal`): guarda cada pregunta real hecha
+  al asistente. Es investigación de palabras clave en el lenguaje de los usuarios, y no aparece en
+  Search Console.
+- **Revisar `AI_TOPE_DIARIO_USD`** (hoy 1 USD/día) antes de que el asistente pase de 1 a 7 páginas.
+- **Los clics muertos (30 % en Clarity) siguen sin explicación.** Ya no se pueden atribuir a la
+  hidratación: hay que investigarlos aparte.
