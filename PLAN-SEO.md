@@ -684,10 +684,16 @@ el 10 de mayo.
 
 ### 9.9 Pendiente
 
-- [ ] Desplegar (push a `main`) y, al día siguiente, **solicitar indexación** de
-      `/calculadora-pension` en Search Console. El último rastreo es del 14 de septiembre:
-      sin empujón, la Fase 4 y la Fase 5 pueden tardar semanas en evaluarse.
-- [ ] Primera medición semanal el lunes siguiente al deploy.
+- [x] **Desplegado el 2 de octubre de 2026, 04:22 UTC** (`c30a8e8`). El workflow verificó el
+      SHA y terminó en 21 s. Comprobado en vivo: título, description, H1, las cuatro anclas
+      nuevas, la tabla según sueldo y 7 enlaces a `/guias/pension-de-alimentos`. Cero
+      apariciones de "Papito Corazón".
+- [x] **Indexación solicitada** para `/calculadora-pension` el 2 de octubre de 2026, justo
+      después de verificar el deploy. Search Console confirma: *"Se ha añadido la URL a una
+      cola de rastreo prioritaria"*. Era necesario porque el último rastreo era del 14 de
+      septiembre, anterior incluso a la Fase 4.
+- [ ] Primera medición semanal: **lunes 5 de octubre de 2026**. Instrucciones en
+      `SEGUIMIENTO-SEO.md`.
 - [ ] Publicar el contenedor de GTM (§8.5, sigue guardado sin publicar) y registrar los 5
       parámetros como dimensiones personalizadas en GA4.
 - [ ] Bing Webmaster Tools + IndexNow (§8.6). Sigue siendo el hallazgo más barato:
