@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "acuerdalo-dist",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/preview-dist.mjs", "dist", "4173"],
+      "port": 4173
+    }
+  ]
+}
