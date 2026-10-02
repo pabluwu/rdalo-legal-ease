@@ -461,3 +461,234 @@ el texto y el resto de la página usa un valor derivado ya normalizado a 1-10.
 - **Revisar `AI_TOPE_DIARIO_USD`** (hoy 1 USD/día) antes de que el asistente pase de 1 a 7 páginas.
 - **Los clics muertos (30 % en Clarity) siguen sin explicación.** Ya no se pueden atribuir a la
   hidratación: hay que investigarlos aparte.
+
+---
+
+## 9. Fase 5 — La caída de mayo (2 de octubre de 2026)
+
+Revisión con el export de Search Console de **12 meses** (29/09/2025 – 29/09/2026), la
+historia de git y una comprobación en vivo de Search Console el 2 de octubre de 2026.
+
+### 9.1 El diagnóstico de julio estaba incompleto
+
+La Fase 1 concluyó que *"el sitio nunca posicionó"*. Esa lectura se hizo con un export de
+91 días que empezaba el **29 de abril de 2026**: exactamente la semana en que empezó la
+caída. La ventana solo vio las secuelas.
+
+Con 12 meses a la vista, el sitio **sí posicionó**, y bien:
+
+| Mes | Clics | Impresiones | Posición media |
+|---|---:|---:|---:|
+| dic 2025 | 2 | 55 | — |
+| ene 2026 | 3 | 313 | 31,7 |
+| feb 2026 | 3 | 589 | 10,1 |
+| mar 2026 | 16 | 1.209 | 5,8 |
+| **abr 2026** | **35** | **2.057** | **6,0** |
+| may 2026 | 3 | 460 | 48,1 |
+| jun 2026 | 2 | 158 | 79,3 |
+| jul 2026 | 0 | 58 | — |
+| ago 2026 | 0 | 218 | 71,5 |
+| sep 2026 | 0 | 107 | 60,0 |
+
+Abril de 2026 fue el mejor mes del sitio: 2.057 impresiones, 35 clics y posición media 6.
+En mayo se perdió el **78 % de las impresiones** y el **91 % de los clics**, y la posición
+pasó de 6 a 48. El desplome, semana a semana:
+
+| Semana | Impresiones | Posición |
+|---|---:|---:|
+| 12–18 abr | 617 | 4,9 |
+| 19–25 abr | 604 | 6,0 |
+| 26 abr – 2 may | 392 | 8,0 |
+| **3–9 may** | **96** | **11,9** |
+| 10–16 may | 113 | 33,2 |
+| 17–23 may | 127 | 40,7 |
+| 24–30 may | 76 | **74,9** |
+| 31 may – 6 jun | 48 | 79,8 |
+
+Esto no es un sitio que nunca arrancó. Es una página que funcionaba y se rompió.
+
+### 9.2 Indexación: descartada como causa
+
+Comprobado en Search Console el **2 de octubre de 2026** (propiedad `sc-domain:acuerdalo.cl`):
+
+- `https://acuerdalo.cl/calculadora-pension` → **"La URL está en Google"**, *"La página está
+  indexada"*. Nunca salió del índice.
+- **Acciones manuales: ningún problema detectado.** La degradación es algorítmica, no una
+  penalización.
+- **Último rastreo: 14 de septiembre de 2026, 15:47.** Es decir, **anterior al deploy de la
+  Fase 4** (21 de septiembre). Todo el trabajo de septiembre —consolidación de URLs, 1.210
+  palabras en la calculadora, autoría en datos estructurados, 301 en nginx— **todavía no lo
+  ha visto Google**. Los datos de GSC hasta el 29 de septiembre describen la página vieja.
+- Cobertura: 5 indexadas / 12 sin indexar, sin cambio respecto al 21 de septiembre.
+
+**Conclusión:** la caída de mayo no fue un problema de indexación. La página estaba
+indexada antes, durante y después. Lo que perdió fue **relevancia**, no presencia.
+
+### 9.3 Cambios de URL y redirecciones: descartados para mayo
+
+En abril y mayo de 2026 **no hubo ningún cambio de URL ni ninguna redirección**. Todo el
+trabajo de URLs —consolidar 12 en 8, `/guias/*/marco-teorico` → categoría,
+`/guias/divorcio` → `/divorcio-en-chile`, los 301 en nginx— es del **21 de septiembre**, y
+está documentado en la Fase 4 (§8.2 y §8.3).
+
+El único cambio de rutas en abril fue **añadir** `/calculadora-pension/:cantidadHijosParam`
+(commit `1f5f3b9`). No estaba enlazada desde ninguna parte, no entró en el sitemap y su
+canonical apuntaba a `/calculadora-pension`. Hizo daño más tarde —errores de hidratación y
+superficie infinita de soft-404, §8.1— pero no explica mayo.
+
+Las redirecciones son un tema de septiembre. No son la causa de la caída de mayo.
+
+### 9.4 Qué se tocó en abril y mayo: la causa
+
+Hay cinco commits entre marzo y junio. Cuatro son de abril, y tres del mismo día:
+
+| Commit | Fecha | Qué hizo |
+|---|---|---|
+| `ada9c23` | 21 abr | `feat: ci/cd` — primer workflow de despliegue automático |
+| `1f5f3b9` | **21 abr** | **`feat: cambios seo` — reescritura de la calculadora** |
+| `ff5fe36` | 21 abr | `fix: passphrase cicd` |
+| `1d1b171` | 29 abr | `fix: input calculadora` |
+| `2527e85` | 1 jun | `feat: nuevo modal resultado calculadora` |
+
+`1f5f3b9` es la causa. La caída empieza la semana del 3 de mayo, doce días después, que es
+el tiempo que tarda Google en rastrear, reevaluar y reordenar.
+
+**Lo que hizo ese commit en `/calculadora-pension`:**
+
+1. **Cambió el título por uno que nadie busca.** De
+   `"Calculadora pensión de alimentos Chile (2025) – cuánto pagar por hijo"` a
+   `"Calculadora Ley Papito Corazón 2026: Cálculo exacto de pensión"`. Se fue la palabra
+   **"Chile"** y se fue la forma **"pensión de alimentos"** del lugar donde más pesa, a
+   cambio de un apodo coloquial. La consulta que traía el tráfico era, y sigue siendo,
+   *"calculadora de pensión de alimentos chile"*: 116 impresiones y 3 de los 64 clics del
+   año. El título dejó de responderla.
+2. **Borró el contenido que sustentaba la página.** Desapareció el bloque *"¿Cómo se
+   calcula?"* con los porcentajes reales (40 %, 30 % por hijo, tope del 50 %, ingreso
+   mínimo), la nota de qué ingresos se consideran y el descargo de responsabilidad. El
+   `FAQPage` pasó de 5 preguntas a 3. La página quedó en ~508 palabras.
+3. **Puso relleno en su lugar.** Dos tarjetas con titular de palabra clave y un cuerpo que
+   no responde el titular: *"Porcentaje de pensión alimenticia por 3 hijos"* seguido de
+   *"La ley chilena busca proteger el bienestar de los menores…"*.
+4. **Encabezados escritos como consultas, sin tildes.** El H2 pasó de *"¿Cómo se calcula la
+   pensión de alimentos en Chile?"* a *"¿Como se saca el porcentaje de pension alimenticia?"*,
+   copiado literal del buscador. El H1 quedó *"Calculadora de Pensión de Alimentos:
+   Porcentajes Pensión Alimenticia"*, dos frases clave pegadas.
+5. **Añadió una señal social falsa y cambiante:**
+   `⚡️ {Math.floor(Math.random() * 20) + 80} personas calculando ahora`. Un número inventado
+   y distinto en cada carga.
+6. **Dejó la página contradiciéndose.** Subió `INGRESO_MINIMO_2025` de 529.000 a 539.000 en
+   el código, pero el JSON-LD de FAQ y las tarjetas nuevas siguieron diciendo $529.000.
+
+Es, punto por punto, el perfil que un core update descarta: contenido adelgazado,
+encabezados escritos para el robot, señales infladas y datos estructurados que no coinciden
+con la página. En YMYL —derecho de familia, dinero, hijos— el listón es más alto todavía.
+
+**El core update de mayo de 2026** (21 may – 2 jun, §1) cae justo encima: la posición pasa
+de 40,7 la semana del 17 de mayo a 74,9 la del 24. No es el origen —la caída ya había
+empezado el 3 de mayo— pero es lo que la consolidó.
+
+**El CI/CD del mismo día agravó todo lo demás.** `ada9c23` automatizó el despliegue sin
+`set -e` y con `rsync` sin `--delete`. Desde ese día cada push salió a producción sin
+revisión, el pipeline reportó éxito publicando código viejo de julio a septiembre
+(`945ff4c`) y el webroot acumuló HTML de builds anteriores (`c74b20a`). Ambos defectos ya
+están corregidos, pero nacieron en el mismo commit que la reescritura.
+
+**Veredicto:** la caída de mayo fue autoinfligida. Un commit de 318 líneas el 21 de abril
+cambió el título hacia una consulta que nadie busca y vació la página de contenido, sobre
+un SPA que ya servía HTML vacío y sin señales de autoría; el core update de mayo hizo el
+resto.
+
+### 9.5 Qué se corrigió ahora (2 de octubre de 2026)
+
+El título de abril **seguía vivo**: sobrevivió a la Fase 2 y a la Fase 4. Cinco meses.
+
+| Antes (21 abr) | Ahora |
+|---|---|
+| `Calculadora Ley Papito Corazón: cálculo exacto de pensión` | `Calculadora de pensión de alimentos Chile 2026 \| Gratis` (55 car.) |
+| `Calculadora de Pensión de Alimentos: Porcentajes Pensión Alimenticia` (H1) | `Calculadora de pensión de alimentos en Chile` (H1) |
+| `…nuestra tabla 2026 actualizada… bajo la Ley Papito Corazón. ¡Entra aquí!` | `Calcula gratis la pensión de alimentos en Chile 2026 según tu sueldo y el número de hijos. Resultado al instante con los porcentajes de la Ley N° 14.908.` (153 car.) |
+
+Además, en `src/pages/CalculadoraPension.tsx`:
+
+- **Secciones nuevas para la cola larga**, con ancla propia: `#porcentaje-por-hijos` (con
+  un H3 por 1, 2 y 3 hijos), `#segun-sueldo` (tabla de 6 sueldos × 3 tramos de hijos) y
+  `#bruto-o-liquido`. Más dos preguntas nuevas en el `FAQPage` (3 hijos, bruto o líquido).
+- **Índice navegable** al inicio del contenido, que ancla las secciones para poder
+  enlazarlas desde las guías y desde fuera.
+- **`pensionReferencial(ingresos, hijos)`**, función pura que ahora usan **la calculadora y
+  la tabla**. La tabla no puede contradecir al botón de calcular, que es exactamente el bug
+  que hubo que arreglar en septiembre (§8.4).
+- **Cuatro enlaces contextuales nuevos** a `/guias/pension-de-alimentos` dentro del cuerpo
+  (intro, tabla según sueldo, qué incluye, cobro y tramitación), además de la caja final.
+  Antes el único enlace a la guía vivía en un descargo al pie.
+- **Eliminado el bloque "Dos ejemplos resueltos"**: repetía, con el mismo sueldo de
+  $800.000 y las mismas cifras, lo que ahora dicen las secciones por 1, 2 y 3 hijos y la
+  tabla según sueldo. Duplicar dentro de la misma página es parte de lo que la hundió en
+  mayo; no se añade relleno, se añade cobertura.
+- El HTML servido pasa de ~1.210 a **1.887 palabras**.
+
+Verificado en el build: título, description y canonical correctos, esquema de encabezados
+limpio, tabla coherente con la calculadora ($700.000 → $280.000 por 1 hijo, $350.000 desde
+2), sin errores de consola ni de hidratación, y legible en móvil.
+
+### 9.6 Decisión: secciones ancladas, no páginas nuevas (todavía)
+
+La cola larga alrededor de la calculadora da para páginas propias —*porcentaje por N hijos*,
+*según sueldo*, *tabla*—. De las 255 consultas del export, **99 están en posición 10 o
+mejor, y 50 de ellas son de esta familia** (porcentaje, según sueldo, tabla, cuánto por N
+hijos), sumando 127 impresiones. Aun así, **ahora
+van como secciones de la calculadora, no como URLs separadas**, por tres razones:
+
+1. Hace diez días se consolidaron 12 URLs en 8 precisamente porque dos páginas por tema se
+   canibalizaban y Google indexaba la equivocada (§8.1). Crear cuatro páginas casi iguales
+   repetiría el error.
+2. `/calculadora-pension` es la única URL con historial y posición. Las secciones heredan
+   esa autoridad; una URL nueva empieza de cero.
+3. Google **todavía no ha rastreado** la versión de septiembre. Añadir URLs antes de saber
+   cómo le fue a la consolidación es medir dos cambios a la vez.
+
+**Cuándo sí sacarlas a página propia:** cuando una sección pase de ~150 impresiones/mes de
+forma sostenida y la calculadora esté en el top 5 de su consulta cabeza. Entonces la página
+nueva compite con terceros, no consigo misma. Las anclas ya existen, así que el día que se
+separen el enlazado interno no cambia.
+
+### 9.7 Divorcio y medidas de protección: apuesta larga
+
+Se mantienen como inversión de fondo, **sin esperar resultados cercanos**:
+
+- El contenido que hoy vive en `/divorcio-en-chile` acumuló **609 impresiones en posición
+  67,6** bajo su URL anterior (`/guias/divorcio/marco-teorico`, redirigida con 301 el 21 de
+  septiembre). Es la segunda URL del sitio por impresiones, muy por detrás de la calculadora
+  (4.209), pero es la mayor demanda latente fuera de ella. La SERP la dominan bcn.cl,
+  pjud.cl y despachos consolidados: pasar de 67 a la primera página no es cuestión de un
+  título.
+- Lo mismo en medidas de protección: **160 impresiones en posición 17,1** bajo
+  `/guias/medidas-de-proteccion/marco-teorico`, hoy redirigida a la categoría. Está mucho
+  más cerca y es el candidato más barato de los dos.
+- Las dos redirecciones son de hace diez días, así que el historial todavía está migrando:
+  parte de la caída aparente de estas URLs en las próximas semanas será el traspaso, no una
+  pérdida real.
+- Lo que mueve la aguja aquí es **profundidad real y enlaces externos**: contenido que
+  responda plazos, costos y qué pasa si el otro se niega mejor que bcn.cl, y enlaces desde
+  colegios de abogados, medios y directorios legales chilenos (§5, Fase 3). Eso es trabajo
+  de meses, no de un deploy.
+- **No medir estas dos URLs semana a semana.** Revisión mensual. El seguimiento semanal es
+  solo para la calculadora, donde sí hay señal.
+
+### 9.8 Medición
+
+Ver **`SEGUIMIENTO-SEO.md`** y `scripts/seo-posiciones.py`. Se sigue la **posición** de la
+calculadora en sus consultas cabeza, no los clics: 3 clics en 22 semanas no permiten
+distinguir una tendencia de una casualidad, mientras que la posición ya marcaba el desplome
+el 10 de mayo.
+
+### 9.9 Pendiente
+
+- [ ] Desplegar (push a `main`) y, al día siguiente, **solicitar indexación** de
+      `/calculadora-pension` en Search Console. El último rastreo es del 14 de septiembre:
+      sin empujón, la Fase 4 y la Fase 5 pueden tardar semanas en evaluarse.
+- [ ] Primera medición semanal el lunes siguiente al deploy.
+- [ ] Publicar el contenedor de GTM (§8.5, sigue guardado sin publicar) y registrar los 5
+      parámetros como dimensiones personalizadas en GA4.
+- [ ] Bing Webmaster Tools + IndexNow (§8.6). Sigue siendo el hallazgo más barato:
+      Bing y Yahoo aportan el 99 % del tráfico real.
