@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calculator,
@@ -84,6 +85,26 @@ const calculoPorHijoEnPesos = (hijos: number) =>
 const minimoEnPesos = (hijos: number) =>
   INGRESO_MINIMO * Math.min(porcentajeMinimoLegal(hijos), TOPE_LEGAL);
 
+/**
+ * Monto referencial para un sueldo y un numero de hijos: el porcentaje aplicado a
+ * las rentas, nunca por debajo del minimo legal. Es la misma formula que usa el
+ * boton de calcular, extraida aqui a proposito: la tabla "segun sueldo" de mas
+ * abajo se genera con esta funcion, de modo que no puede contradecir a la
+ * calculadora. En septiembre de 2026 ya habia pasado que la prosa afirmaba
+ * minimos que el propio calculo desmentia.
+ */
+const pensionReferencial = (ingresos: number, hijos: number) => {
+  const porcentaje = Math.min(porcentajeMinimoLegal(hijos), TOPE_LEGAL);
+  return Math.max(ingresos * porcentaje, INGRESO_MINIMO * porcentaje);
+};
+
+/**
+ * Sueldos de la tabla "segun sueldo". Salen de las consultas reales de Search
+ * Console ("si gano 700 cuanto debo pagar de pension alimenticia", "si gano un
+ * millon cuanto pago de pension alimenticia", "si gano 800 cuanto debes pagar").
+ */
+const SUELDOS_TABLA = [500_000, 700_000, 800_000, 1_000_000, 1_500_000, 2_000_000];
+
 
 const faqs = [
   {
@@ -95,6 +116,16 @@ const faqs = [
     question: "¿Cuánto es el porcentaje de pensión alimenticia por 2 hijos?",
     answer:
       `Por dos hijos el cálculo da 30% de un ingreso mínimo por cada uno, es decir un 60% en total. Pero el tope del 50% siempre prevalece, así que el mínimo aplicable es ${formatoCLP(minimoEnPesos(2))} mensuales. Ese tope se mide sobre las rentas del alimentante: con un sueldo más alto la pensión sube hasta el 50% de ese sueldo.`,
+  },
+  {
+    question: "¿Cuánto es el porcentaje de pensión alimenticia por 3 hijos?",
+    answer:
+      `Por tres hijos el cálculo daría 30% por cada uno, un 90% en total, pero el tope del 50% prevalece. El mínimo aplicable es ${formatoCLP(minimoEnPesos(3))} mensuales, el mismo que por dos hijos, y sobre un sueldo mayor la referencia es el 50% de ese sueldo. Ese total se reparte entre los tres hijos; los gastos extraordinarios se fijan aparte.`,
+  },
+  {
+    question: "¿La pensión de alimentos se calcula sobre el sueldo bruto o el líquido?",
+    answer:
+      "Sobre el líquido: el porcentaje se aplica a lo que la persona efectivamente recibe, descontadas las cotizaciones previsionales y de salud obligatorias. Los descuentos voluntarios, como un crédito de consumo o un ahorro previsional voluntario, no se restan del ingreso considerado.",
   },
   {
     question: "¿Cuánto es la pensión mínima por un hijo?",
@@ -164,12 +195,17 @@ const CalculadoraPension = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const dynamicTitle = "Calculadora Ley Papito Corazón: cálculo exacto de pensión";
+  // El titulo del 21 de abril de 2026 cambio "calculadora de pension de alimentos
+  // chile" —la consulta que traia el 100% de los clics— por "Ley Papito Corazon",
+  // un apodo coloquial que casi nadie busca. La pagina perdio su posicion en las
+  // semanas siguientes. Estos textos vuelven a la consulta real y suman el gancho
+  // de clic (gratis, segun sueldo y numero de hijos). Ver PLAN-SEO.md, Fase 5.
+  const pageTitle = "Calculadora de pensión de alimentos Chile 2026 | Gratis";
 
-  const dynamicH1 = "Calculadora de Pensión de Alimentos: Porcentajes Pensión Alimenticia";
+  const pageH1 = "Calculadora de pensión de alimentos en Chile";
 
-  const dynamicDescription =
-    "Calcula cuánta pensión corresponde según tu sueldo con nuestra tabla 2026 actualizada. Resultados instantáneos bajo la Ley Papito Corazón. ¡Entra aquí!";
+  const pageDescription =
+    "Calcula gratis la pensión de alimentos en Chile 2026 según tu sueldo y el número de hijos. Resultado al instante con los porcentajes de la Ley N° 14.908.";
 
   const calcularPension = () => {
     // Verificar si es pensionado sin ingresos extra
@@ -194,8 +230,9 @@ const CalculadoraPension = () => {
     const pensionCalculada = ingresos * porcentajeFinal;
     const pensionMinima = INGRESO_MINIMO * porcentajeFinal;
 
-    // La pensión no puede ser menor al porcentaje del ingreso mínimo
-    const pensionFinal = Math.max(pensionCalculada, pensionMinima);
+    // La pensión no puede ser menor al porcentaje del ingreso mínimo. Misma
+    // fórmula que `pensionReferencial`, que alimenta la tabla según sueldo.
+    const pensionFinal = pensionReferencial(ingresos, cantidadHijos);
 
     setResultado(pensionFinal);
     setShowModal(true);
@@ -278,8 +315,8 @@ const CalculadoraPension = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title={dynamicTitle}
-        description={dynamicDescription}
+        title={pageTitle}
+        description={pageDescription}
         canonical="https://acuerdalo.cl/calculadora-pension"
         jsonLd={[articleJsonLd, faqSchema, breadcrumbJsonLd]}
       />
@@ -294,11 +331,11 @@ const CalculadoraPension = () => {
             transition={{ duration: 0.4 }}
           >
             <h1 className="text-2xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
-              {dynamicH1}
+              {pageH1}
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
-              Calcula el mínimo legal según el número de hijos y los ingresos, con los
-              porcentajes y el tope que fija la Ley N° 14.908.
+              Calcula gratis cuánto corresponde según tu sueldo y el número de hijos,
+              con los porcentajes y el tope que fija la Ley N° 14.908.
             </p>
             <div className="flex justify-center">
               <AuthorByline updatedAt="21 de septiembre de 2026" />
@@ -432,7 +469,53 @@ const CalculadoraPension = () => {
 
       {/* SEO content pushed lower */}
       <section className="mt-8 mb-4 max-w-3xl mx-auto px-4 space-y-10">
-        <div className="space-y-4">
+        {/* Indice. Cada seccion de abajo responde un grupo de consultas concreto de
+            Search Console; el ancla permite enlazarla desde las guias y desde fuera
+            sin crear todavia una URL nueva. Ver PLAN-SEO.md, Fase 5. */}
+        <nav
+          aria-label="Contenido de esta página"
+          className="rounded-2xl border border-border bg-muted/30 p-5"
+        >
+          {/* <p> y no <h2>: el indice no es una seccion de contenido y no debe
+              aparecer en el esquema de encabezados de la pagina. */}
+          <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            En esta página
+          </p>
+          <ul className="grid gap-2 sm:grid-cols-2 text-sm">
+            <li>
+              <a href="#como-se-calcula" className="text-primary hover:underline">
+                Cómo se calcula
+              </a>
+            </li>
+            <li>
+              <a href="#porcentaje-por-hijos" className="text-primary hover:underline">
+                Porcentaje por 1, 2 o 3 hijos
+              </a>
+            </li>
+            <li>
+              <a href="#segun-sueldo" className="text-primary hover:underline">
+                Tabla según sueldo
+              </a>
+            </li>
+            <li>
+              <a href="#bruto-o-liquido" className="text-primary hover:underline">
+                ¿Sueldo bruto o líquido?
+              </a>
+            </li>
+            <li>
+              <a href="#que-ingresos" className="text-primary hover:underline">
+                Qué ingresos se consideran
+              </a>
+            </li>
+            <li>
+              <a href="#preguntas-frecuentes" className="text-primary hover:underline">
+                Preguntas frecuentes
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div id="como-se-calcula" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl md:text-3xl font-bold">
             Cómo se calcula la pensión de alimentos en Chile
           </h2>
@@ -448,14 +531,22 @@ const CalculadoraPension = () => {
               Ley N° 14.908
             </a>{" "}
             no entrega una fórmula cerrada, pero sí un piso y un techo que el tribunal
-            debe respetar. Esta calculadora aplica esos dos límites.
+            debe respetar. Esta calculadora aplica esos dos límites. El detalle del
+            procedimiento, los requisitos y la jurisprudencia están en la{" "}
+            <Link
+              to="/guias/pension-de-alimentos"
+              className="text-primary hover:underline"
+            >
+              guía de pensión de alimentos
+            </Link>
+            .
           </p>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold">
-            Porcentajes de pensión alimenticia por número de hijos
-          </h3>
+        <div id="porcentaje-por-hijos" className="space-y-4 scroll-mt-24">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Porcentaje de pensión alimenticia por 1, 2 o 3 hijos
+          </h2>
           <p className="text-muted-foreground leading-relaxed">
             El mínimo legal se mide sobre el ingreso mínimo mensual, hoy{" "}
             {formatoCLP(INGRESO_MINIMO)}. Sobre ese piso el monto sube según los ingresos
@@ -515,32 +606,127 @@ const CalculadoraPension = () => {
             quien paga, así que con un sueldo más alto la pensión sube hasta el 50 % de
             ese sueldo.
           </p>
-        </div>
 
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold">Dos ejemplos resueltos</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-card p-5">
-              <h4 className="font-semibold mb-2">Un hijo, sueldo de {formatoCLP(800000)}</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                El 40 % de {formatoCLP(800000)} son {formatoCLP(800000 * 0.4)}, por encima del
-                mínimo legal de {formatoCLP(minimoEnPesos(1))} y por debajo del tope del 50 %.
-                La referencia son {formatoCLP(800000 * 0.4)} mensuales.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-border bg-card p-5">
-              <h4 className="font-semibold mb-2">Dos hijos, sueldo de {formatoCLP(800000)}</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                El 30 % por cada hijo daría un 60 %, pero el tope del 50 % prevalece: la
-                referencia son {formatoCLP(800000 * 0.5)} mensuales en total, repartidos entre
-                ambos hijos. Con tres o cuatro hijos y este mismo sueldo, el resultado es el
-                mismo, porque el tope ya está alcanzado.
-              </p>
-            </div>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">
+              Porcentaje de pensión alimenticia por 1 hijo
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Por un hijo el mínimo legal es el{" "}
+              {Math.round(porcentajeMinimoLegal(1) * 100)} % de un ingreso mínimo
+              mensual, hoy {formatoCLP(minimoEnPesos(1))}. Sobre ese piso la referencia
+              es el 40 % de las rentas de quien paga: con un sueldo de{" "}
+              {formatoCLP(800000)} son {formatoCLP(pensionReferencial(800000, 1))} al
+              mes. Con un solo hijo el tope del 50 % no llega a aplicarse.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">
+              Porcentaje de pensión alimenticia por 2 hijos
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Por dos hijos el cálculo da 30 % por cada uno, es decir un 60 %. Ese 60 %
+              está sobre el tope legal, así que lo aplicable es el 50 %: el mínimo queda
+              en {formatoCLP(minimoEnPesos(2))} mensuales en total —no por hijo— y con un
+              sueldo de {formatoCLP(800000)} la referencia sube a{" "}
+              {formatoCLP(pensionReferencial(800000, 2))}.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">
+              Porcentaje de pensión alimenticia por 3 hijos
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Por tres hijos el cálculo daría un 90 %, muy por encima del tope. El
+              resultado es el mismo que por dos: {formatoCLP(minimoEnPesos(3))} de mínimo
+              y un 50 % de las rentas como referencia. No es un error de la calculadora:
+              desde el segundo hijo el tope ya está alcanzado y sumar hijos no mueve el
+              total. Lo que sí cambia es cómo se reparte ese monto y el peso de los
+              gastos extraordinarios, que se fijan aparte.
+            </p>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div id="segun-sueldo" className="space-y-4 scroll-mt-24">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Pensión de alimentos según sueldo: tabla 2026
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">
+            La tabla aplica el mismo cálculo que la calculadora de arriba: el porcentaje
+            sobre las rentas, nunca por debajo del mínimo legal. Son montos referenciales
+            sobre el sueldo líquido total.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+              <caption className="sr-only">
+                Pensión de alimentos referencial según sueldo mensual y número de hijos
+              </caption>
+              <thead className="bg-muted/50">
+                <tr>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    Sueldo mensual
+                  </th>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    1 hijo
+                  </th>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    2 hijos
+                  </th>
+                  <th scope="col" className="text-left p-3 font-semibold">
+                    3 o más hijos
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {SUELDOS_TABLA.map((sueldo) => (
+                  <tr key={sueldo} className="border-t border-border">
+                    <th scope="row" className="text-left p-3 font-medium">
+                      {formatoCLP(sueldo)}
+                    </th>
+                    {[1, 2, 3].map((hijos) => (
+                      <td key={hijos} className="p-3 text-muted-foreground">
+                        {formatoCLP(pensionReferencial(sueldo, hijos))}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Las columnas de 2 y 3 hijos coinciden porque ambas llegan al tope del 50 %.
+            Con un sueldo bajo el ingreso mínimo ({formatoCLP(INGRESO_MINIMO)}) el
+            resultado no baja del piso legal: {formatoCLP(minimoEnPesos(1))} por un hijo y{" "}
+            {formatoCLP(minimoEnPesos(2))} desde dos. Si quien debe pagar no tiene trabajo
+            formal, el tribunal igual puede fijar pensión estimando su capacidad
+            económica; ese escenario está explicado en la{" "}
+            <Link
+              to="/guias/pension-de-alimentos"
+              className="text-primary hover:underline"
+            >
+              guía de pensión de alimentos
+            </Link>
+            .
+          </p>
+        </div>
+
+        <div id="bruto-o-liquido" className="space-y-4 scroll-mt-24">
+          <h3 className="text-xl font-semibold">
+            ¿La pensión se calcula sobre el sueldo bruto o el líquido?
+          </h3>
+          <p className="text-muted-foreground leading-relaxed">
+            Sobre el líquido. El porcentaje se aplica a lo que la persona efectivamente
+            recibe, descontadas las cotizaciones previsionales y de salud obligatorias, no
+            sobre el sueldo bruto del contrato. Los descuentos voluntarios —un crédito de
+            consumo, un ahorro previsional voluntario, una cuota social— no se restan: de
+            lo contrario bastaría con endeudarse para bajar la pensión. Por eso esta
+            calculadora pide los ingresos líquidos.
+          </p>
+        </div>
+
+        <div id="que-ingresos" className="space-y-4 scroll-mt-24">
           <h3 className="text-xl font-semibold">Qué ingresos se consideran</h3>
           <p className="text-muted-foreground leading-relaxed">
             No solo el sueldo base. El tribunal evalúa la capacidad económica completa:
@@ -563,7 +749,14 @@ const CalculadoraPension = () => {
             alimentación, vestuario, salud, educación, vivienda y recreación básica. Los
             gastos extraordinarios —una cirugía, la matrícula anual, un tratamiento
             prolongado— no se entienden incluidos y suelen fijarse aparte, repartidos
-            entre ambos padres.
+            entre ambos padres. La{" "}
+            <Link
+              to="/guias/pension-de-alimentos"
+              className="text-primary hover:underline"
+            >
+              guía de pensión de alimentos
+            </Link>{" "}
+            detalla qué se ha considerado gasto extraordinario en la práctica.
           </p>
         </div>
 
@@ -583,7 +776,15 @@ const CalculadoraPension = () => {
             >
               Ley N° 21.389
             </a>{" "}
-            reforzó estos mecanismos.
+            reforzó estos mecanismos. El procedimiento de cobro, paso a paso, está en
+            la{" "}
+            <Link
+              to="/guias/pension-de-alimentos"
+              className="text-primary hover:underline"
+            >
+              guía de pensión de alimentos
+            </Link>
+            .
           </p>
         </div>
 
@@ -611,6 +812,16 @@ const CalculadoraPension = () => {
               definitivo y su forma de pago.
             </li>
           </ol>
+          <p className="text-muted-foreground leading-relaxed">
+            Cada etapa, con plazos y documentos, está desarrollada en la{" "}
+            <Link
+              to="/guias/pension-de-alimentos"
+              className="text-primary hover:underline"
+            >
+              guía de pensión de alimentos en Chile
+            </Link>
+            .
+          </p>
         </div>
 
         <div className="space-y-4">
@@ -623,7 +834,7 @@ const CalculadoraPension = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div id="preguntas-frecuentes" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl md:text-3xl font-bold">
             Preguntas frecuentes sobre el cálculo de pensión
           </h2>
@@ -650,24 +861,24 @@ const CalculadoraPension = () => {
           </p>
           <p className="text-sm text-muted-foreground">
             Para el detalle legal completo, revisa la{" "}
-            <a href="/guias/pension-de-alimentos" className="text-primary underline">
+            <Link to="/guias/pension-de-alimentos" className="text-primary underline">
               guía de pensión de alimentos
-            </a>
+            </Link>
             . Si tu caso también involucra{" "}
-            <a href="/divorcio-en-chile" className="text-primary underline">
+            <Link to="/divorcio-en-chile" className="text-primary underline">
               divorcio
-            </a>
+            </Link>
             ,{" "}
-            <a
-              href="/guias/visitas-y-cuidado-personal"
+            <Link
+              to="/guias/visitas-y-cuidado-personal"
               className="text-primary underline"
             >
               visitas y cuidado personal
-            </a>{" "}
+            </Link>{" "}
             o{" "}
-            <a href="/guias/medidas-de-proteccion" className="text-primary underline">
+            <Link to="/guias/medidas-de-proteccion" className="text-primary underline">
               medidas de protección
-            </a>
+            </Link>
             , tenemos guías para cada uno.
           </p>
         </div>
