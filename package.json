@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite-react-ssg build",
-    "build:dev": "vite-react-ssg build -m development",
+    "build": "vite-react-ssg build && npm run seo:postbuild",
+    "build:dev": "vite-react-ssg build -m development && npm run seo:postbuild",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seo:postbuild": "node scripts/gen-sitemap.mjs dist && node scripts/fix-charset.mjs dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
