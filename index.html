@@ -10,11 +10,61 @@
       escribe en el <head> de cada HTML prerenderizado. Duplicarlas aquí
       produciría dos <title>/og:title por página.
     -->
-    <!-- Google Tag Manager -->
+    <!--
+      Microsoft Clarity, cargado directamente y en dos partes separadas.
+
+      Antes esto era Google Tag Manager, que pesaba 127 KB y encadenaba GA4
+      (191 KB) y Clarity (25 KB): 354 KB de terceros por delante de 230 KB de
+      aplicación, dentro del camino de un LCP que estaba en 7,2 s en móvil.
+      Decidido quedarse solo con Clarity, mantener GTM era pagar el contenedor
+      entero para entregar un script de 25 KB. Ver PLAN-SEO-OCT-2026.md §4.1.
+
+      La cola `clarity` se crea AQUÍ, síncrona: cuesta nada y es lo que evita
+      perder eventos. `registrarCalculo` (src/analytics/clarity.ts) no hace nada
+      si la función no existe, así que un cálculo anterior a la llegada del
+      script se perdería. Creada de antemano, las llamadas se encolan en
+      `clarity.q` y el script las procesa al cargar — es el comportamiento del
+      snippet oficial.
+
+      La DESCARGA se difiere, con lo que ocurra primero: la primera interacción
+      del usuario, o `load` + idle. Lo segundo cubre a quien lee sin tocar nada;
+      lo primero garantiza que Clarity esté en marcha antes de cualquier evento,
+      porque todos los que medimos requieren interacción previa.
+
+      Adquisición y consultas las cubre Search Console, que no pesa en la página.
+    -->
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-K6SPZ92X');
+      (function (w, d, s, n, i) {
+        w[n] =
+          w[n] ||
+          function () {
+            (w[n].q = w[n].q || []).push(arguments);
+          };
+
+        var cargado = false;
+        function cargar() {
+          if (cargado) return;
+          cargado = true;
+          var t = d.createElement(s),
+            y = d.getElementsByTagName(s)[0];
+          t.async = true;
+          t.src = "https://www.clarity.ms/tag/" + i;
+          y.parentNode.insertBefore(t, y);
+        }
+
+        function programar() {
+          if ("requestIdleCallback" in w) w.requestIdleCallback(cargar, { timeout: 3000 });
+          else w.setTimeout(cargar, 1500);
+        }
+
+        if (d.readyState === "complete") programar();
+        else w.addEventListener("load", programar, { once: true });
+
+        ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (evento) {
+          w.addEventListener(evento, cargar, { once: true, passive: true });
+        });
+      })(window, document, "script", "clarity", "wjaumb7euk");
     </script>
-    <!-- End Google Tag Manager -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,10 +74,7 @@
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K6SPZ92X"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <!-- Sin `noscript`: Clarity graba sesiones, y sin JS no hay sesión que grabar. -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

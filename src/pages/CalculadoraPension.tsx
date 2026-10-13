@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Seo from "@/seo/Seo";
-import { pushDataLayer } from "@/analytics/gtm";
+import { registrarCalculo } from "@/analytics/clarity";
 import AuthorByline from "@/components/AuthorByline";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import { buildArticleJsonLd } from "@/seo/articleJsonLd";
@@ -237,18 +237,12 @@ const CalculadoraPension = () => {
     setResultado(pensionFinal);
     setShowModal(true);
 
-    // Un calculo no se persiste en ninguna parte: es estado de cliente. Sin este
-    // evento no habia forma de saber cuantas visitas a la calculadora llegan a
-    // calcular, ni con cuantos hijos ni en que tramo de ingresos.
-    pushDataLayer({
-      event: "calculo_pension",
+    registrarCalculo({
       hijos: cantidadHijos,
-      tramo_ingreso: tramoIngreso(ingresos),
-      tramo_resultado: tramoMonto(pensionFinal),
-      // true cuando gana tan poco que el resultado lo fija el minimo legal y no
-      // su sueldo: dice cuanta de la audiencia esta en el piso.
-      aplica_minimo_legal: pensionMinima > pensionCalculada,
-      es_pensionado: esPensionado === "si",
+      tramoIngreso: tramoIngreso(ingresos),
+      tramoResultado: tramoMonto(pensionFinal),
+      aplicaMinimoLegal: pensionMinima > pensionCalculada,
+      esPensionado: esPensionado === "si",
     });
   };
 
