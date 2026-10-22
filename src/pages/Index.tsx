@@ -9,7 +9,8 @@ import HowWeWork from "@/components/HowWeWork";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
-import { ORG_ID } from "@/seo/entities";
+import { AUTOR_ID, MIGUEL_ID, ORG_ID, SITE_URL } from "@/seo/entities";
+import { ABOGADOS } from "@/lib/contacto";
 import AsistenteLegal from "@/components/AsistenteLegal";
 
 const organizationJsonLd = {
@@ -17,21 +18,27 @@ const organizationJsonLd = {
   "@type": "LegalService",
   "@id": ORG_ID,
   name: "Acuérdalo",
-  url: "https://acuerdalo.cl",
-  image: "https://acuerdalo.cl/og-image.jpg",
-  telephone: "+56990538001",
+  alternateName: "Acuérdalo, estudio jurídico",
+  url: SITE_URL,
+  image: `${SITE_URL}/og-image.jpg`,
+  logo: `${SITE_URL}/logo.svg`,
+  telephone: ABOGADOS[1].telefono.replace(/\s/g, ""),
+  email: ABOGADOS[1].email,
+  priceRange: "$20.000 - $200.000+",
   areaServed: {
     "@type": "Country",
     name: "Chile",
   },
   description:
-    "Asesoría legal en derecho de familia en Chile: pensión de alimentos, divorcio, cuidado personal y medidas de protección.",
+    "Estudio jurídico 100% online en Chile. Asesoría en derecho de familia, laboral, civil, tributario y trámites extrajudiciales. Primera orientación gratuita.",
   serviceType: [
-    "Pensión de alimentos",
-    "Divorcio",
-    "Cuidado personal",
-    "Medidas de protección",
+    "Derecho laboral",
+    "Derecho de familia",
+    "Derecho civil",
+    "Derecho tributario",
+    "Trámites extrajudiciales",
   ],
+  employee: [{ "@id": MIGUEL_ID }, { "@id": AUTOR_ID }],
 };
 
 const Index = () => {
@@ -50,8 +57,8 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background font-outfit">
       <Seo
-        title="Abogado de familia en Chile: pensión y calculadora online"
-        description="Abogado de familia y trabajadora social en Chile. Calculadora de pensión de alimentos, divorcio, retención, demanda y asesoría legal en derecho de familia."
+        title="Acuérdalo, estudio jurídico online en Chile | Familia, laboral, civil"
+        description="Estudio jurídico 100% online en Chile. Asesoría en derecho de familia, laboral, civil, tributario y trámites extrajudiciales. Primera orientación gratuita."
         jsonLd={organizationJsonLd}
       />
       <Navbar />

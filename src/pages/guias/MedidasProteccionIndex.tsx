@@ -14,6 +14,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { waLink } from "@/lib/contacto";
 
 const faqs = [
   {
@@ -485,7 +486,7 @@ const MedidasProteccionIndex = () => {
                 Si necesitas ayuda para entender tu caso, podemos orientarte de forma discreta.
               </p>
               <a
-                href="https://wa.me/56990538001?text=Hola,%20necesito%20orientación%20sobre%20medidas%20de%20protección"
+                href={waLink("Hola, necesito orientación sobre medidas de protección")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"

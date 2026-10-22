@@ -1,66 +1,32 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { 
-  Calculator, 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
-  Heart, 
-  FileText, 
-  Scale,
-  Handshake,
-  ArrowRight
-} from "lucide-react";
+import { Briefcase, Users, FileText, Landmark, PenLine } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const services = [
   {
-    icon: Calculator,
-    title: "Pensión de Alimentos",
-    description: "Demandas y cálculos ajustados a ley",
-    href: "/servicios/pension-alimentos",
-  },
-  {
-    icon: TrendingUp,
-    title: "Aumento de Pensión",
-    description: "Cuando las necesidades aumentan",
-    href: "/servicios/aumento-pension",
-  },
-  {
-    icon: TrendingDown,
-    title: "Rebaja de Pensión",
-    description: "Cuando tu situación cambia",
-    href: "/servicios/rebaja-pension",
+    icon: Briefcase,
+    title: "Laboral",
+    description: "Despidos, finiquitos, cobro de prestaciones, entre otros",
   },
   {
     icon: Users,
-    title: "Relación directa y regular (Visitas)",
-    description: "Establece o modifica las visitas",
-    href: "/servicios/visitas",
-  },
-  {
-    icon: Heart,
-    title: "Cuidado Personal",
-    description: "Custodia y tuición de los hijos",
-    href: "/servicios/cuidado-personal",
+    title: "Familia",
+    description: "Pensión de alimentos, visitas, divorcio, cuidado personal, permisos de viaje, entre otros",
   },
   {
     icon: FileText,
-    title: "Divorcio",
-    description: "Unilateral o de mutuo acuerdo",
-    href: "/servicios/divorcio",
+    title: "Civil",
+    description: "Contratos, arriendos, deudas, posesiones efectivas, escritos, prescripciones, entre otros",
   },
   {
-    icon: Scale,
-    title: "Cobro de Deuda de Pensión de Alimentos",
-    description: "Recupera pensiones impagas",
-    href: "/servicios/cobro-deuda",
+    icon: Landmark,
+    title: "Tributario",
+    description: "SII, multas, declaraciones, defensa, defensa de deudores, entre otros",
   },
   {
-    icon: Handshake,
-    title: "Acuerdos Extrajudiciales",
-    description: "Soluciones sin ir a tribunales",
-    href: "/servicios/acuerdos",
+    icon: PenLine,
+    title: "Trámites extrajudiciales",
+    description: "Acuerdos, redacción de documentos, entre otros",
   },
 ];
 
@@ -79,11 +45,11 @@ const Services = () => {
             Servicios que Ofrecemos
           </h2>
           <p className="text-lg text-muted-foreground font-light max-w-2xl mx-auto">
-            Soluciones legales especializadas en derecho de familia, 100% online
+            Asesoría jurídica integral, 100% online en todo Chile
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -92,8 +58,7 @@ const Services = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
             >
-              {/* <Link to={service.href}> */}
-                <Card className="border-border bg-card hover:shadow-soft hover:border-primary/30 transition-all duration-300 h-full group cursor-pointer">
+                <Card className="border-border bg-card hover:shadow-soft hover:border-primary/30 transition-all duration-300 h-full group">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 mb-4 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                       <service.icon className="h-6 w-6 text-primary" />
@@ -101,15 +66,11 @@ const Services = () => {
                     <h3 className="text-lg font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
                       {service.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground font-light mb-3">
+                    <p className="text-sm text-muted-foreground font-light">
                       {service.description}
                     </p>
-                    {/* <span className="inline-flex items-center text-sm text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                      Ver más <ArrowRight className="ml-1 h-4 w-4" />
-                    </span> */}
                   </CardContent>
                 </Card>
-              {/* </Link> */}
             </motion.div>
           ))}
         </div>

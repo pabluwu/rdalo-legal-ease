@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Calculator, Scale, Phone } from "lucide-react";
+import { Menu, X, Calculator, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
+import { waLink } from "@/lib/contacto";
 
 const Navbar = () => {
   const location = useLocation();
@@ -33,9 +35,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <Scale className="h-7 w-7 text-primary" />
-            <span className="font-bold text-xl text-foreground">Acuérdalo</span>
+          <Link to="/" className="flex items-center" aria-label="Acuérdalo, inicio">
+            <Logo />
           </Link>
 
           {/* Desktop Navigation */}
@@ -64,7 +65,7 @@ const Navbar = () => {
             ))}
             <Button asChild size="sm" className="ml-2">
               <a
-                href="https://wa.me/56990538001"
+                href={waLink()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
@@ -114,7 +115,7 @@ const Navbar = () => {
               ))}
               <Button asChild size="sm" className="mt-2 w-full">
                 <a
-                  href="https://wa.me/56990538001"
+                  href={waLink()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2"

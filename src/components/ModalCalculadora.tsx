@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ArrowRight, CheckCircle2, User, Phone, Mail } from "lucide-react";
+import { waLink } from "@/lib/contacto";
 
 interface ModalCalculadoraProps {
   open: boolean;
@@ -124,7 +125,7 @@ const ModalCalculadora: React.FC<ModalCalculadoraProps> = ({
               className="w-full h-14 text-base font-semibold rounded-2xl border-2 border-primary/20 hover:border-primary/40 transition-all"
             >
               <a 
-                href={`https://wa.me/56990538001?text=Hola, acabo de usar la calculadora de pensión y me gustaría una consulta profesional. Monto estimado: ${formatCurrency(montoCalculado)} por ${numeroHijos} ${numeroHijos === 1 ? 'hijo' : 'hijos'}.`}
+                href={waLink(`Hola, acabo de usar la calculadora de pensión y me gustaría una consulta profesional. Monto estimado: ${formatCurrency(montoCalculado)} por ${numeroHijos} ${numeroHijos === 1 ? 'hijo' : 'hijos'}.`)}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -12,6 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { waLink } from "@/lib/contacto";
 
 const breadcrumbJsonLd = buildBreadcrumbJsonLd([
   { name: "Home", path: "/" },
@@ -154,7 +155,7 @@ const GuiasIndex = () => {
               inicial.
             </p>
             <a
-              href="https://wa.me/56990538001?text=Hola,%20necesito%20orientación%20legal"
+              href={waLink("Hola, necesito orientación legal")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"

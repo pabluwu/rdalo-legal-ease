@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import Logo from "@/components/Logo";
+import { ABOGADOS, telLink, waLink } from "@/lib/contacto";
 
 const guideLinks = [
   { to: "/calculadora-pension", label: "Calculadora de pensión de alimentos" },
@@ -13,10 +15,10 @@ const Footer = () => {
     <footer className="py-12 px-6 border-t border-border">
       <div className="max-w-6xl mx-auto grid gap-10 sm:grid-cols-2 md:grid-cols-3">
         <div>
-          <span className="font-bold text-lg text-foreground">Acuérdalo</span>
+          <Logo iconClassName="h-8 w-8" textClassName="text-lg" />
           <p className="text-sm text-muted-foreground font-light mt-2 max-w-xs">
-            Abogado de familia y trabajadora social en Chile. Asesoría en pensión de
-            alimentos, divorcio y derecho de familia, 100% online.
+            Acuérdalo, estudio jurídico. Asesoría en derecho laboral, de familia, civil y
+            tributario, 100% online en todo Chile.
           </p>
         </div>
 
@@ -53,7 +55,7 @@ const Footer = () => {
             </li>
             <li>
               <a
-                href="https://wa.me/56990538001"
+                href={waLink()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -66,6 +68,38 @@ const Footer = () => {
       </div>
 
       <div className="max-w-6xl mx-auto mt-10 pt-6 border-t border-border">
+        <div className="grid gap-6 sm:grid-cols-2 mb-6">
+          {ABOGADOS.map((abogado) => (
+            <div key={abogado.email}>
+              <p className="text-sm font-semibold text-foreground">{abogado.nombre}</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                <li>
+                  <a href={telLink(abogado.telefono)} className="text-muted-foreground hover:text-primary transition-colors">
+                    {abogado.telefono}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`https://wa.me/${abogado.wa}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a href={`mailto:${abogado.email}`} className="text-muted-foreground hover:text-primary transition-colors">
+                    {abogado.email}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="text-muted-foreground font-light text-sm text-center mb-3">
+          Respondemos en menos de 24 horas · Atención 100% online en todo Chile
+        </p>
         <p className="text-muted-foreground font-light text-sm text-center">
           © {__BUILD_YEAR__} Acuérdalo. Todos los derechos reservados.
         </p>

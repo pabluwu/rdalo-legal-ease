@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const pricingItems = [
   {
     title: "Consulta Legal",
-    price: "$15.000",
+    price: "$20.000",
     description: "Evaluación inicial de tu caso",
     features: [
       "30 minutos de asesoría",
@@ -17,23 +17,23 @@ const pricingItems = [
   },
   {
     title: "Casos Judiciales",
-    price: "Desde $150.000",
+    price: "Desde $200.000",
     description: "Depende del tipo de trámite",
     features: [
-      "Pensión de alimentos",
-      "Visitas y cuidado personal",
-      "Divorcio",
-      "Cobro de deudas",
+      "Causas laborales",
+      "Familia: pensiones, visitas, divorcio",
+      "Civil: arriendos, deudas, posesiones efectivas",
+      "Defensa tributaria",
     ],
     highlighted: true,
   },
   {
     title: "Acuerdos",
-    price: "Desde $80.000",
+    price: "Desde $90.000",
     description: "Soluciones extrajudiciales",
     features: [
-      "Redacción de acuerdos",
-      "Redacción de escritos civiles / extrajudicial",
+      "Redacción de acuerdos y contratos",
+      "Escritos civiles y extrajudiciales",
       "Permisos de viaje",
     ],
     highlighted: false,
