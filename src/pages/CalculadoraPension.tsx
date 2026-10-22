@@ -29,6 +29,7 @@ import { registrarCalculo } from "@/analytics/clarity";
 import AuthorByline from "@/components/AuthorByline";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import { buildArticleJsonLd } from "@/seo/articleJsonLd";
+import { waLink } from "@/lib/contacto";
 
 // Fuente unica del ingreso minimo mensual: el calculo, la tabla de minimos, los
 // ejemplos y el JSON-LD de FAQ derivan todos de esta constante. Antes el codigo
@@ -896,7 +897,7 @@ const CalculadoraPension = () => {
         </p>
 
         <Button asChild size="lg">
-          <a target="_blank" href="https://wa.me/56990538001?text=Hola,%20acabo%20de%20usar%20la%20calculadora%20de%20pensión%20y%20me%20gustaría%20una%20consulta%20profesional.">Consultar por mi caso</a>
+          <a target="_blank" href={waLink("Hola, acabo de usar la calculadora de pensión y me gustaría una consulta profesional.")}>Consultar por mi caso</a>
         </Button>
       </div>
 
@@ -936,7 +937,7 @@ const CalculadoraPension = () => {
             <div className="space-y-4">
               <Button asChild className="w-full py-6" size="lg">
                 <a
-                  href="https://wa.me/56990538001?text=Hola,%20necesito%20consultar%20sobre%20pensión%20de%20alimentos%20para%20un%20caso%20donde%20el%20demandado%20es%20pensionado."
+                  href={waLink("Hola, necesito consultar sobre pensión de alimentos para un caso donde el demandado es pensionado.")}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

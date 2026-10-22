@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, MessageCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "./Footer";
+import { waLink } from "@/lib/contacto";
 
 interface ServicePageLayoutProps {
   title: string;
@@ -13,7 +14,7 @@ interface ServicePageLayoutProps {
 
 const ServicePageLayout = ({ title, subtitle, icon, children }: ServicePageLayoutProps) => {
   const openWhatsApp = () => {
-    window.open(`https://wa.me/56990538001?text=Hola,%20necesito%20información%20sobre%20${encodeURIComponent(title)}`, "_blank");
+    window.open(waLink(`Hola, necesito información sobre ${title}`), "_blank");
   };
 
   return (

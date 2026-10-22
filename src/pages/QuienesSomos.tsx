@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Seo from "@/seo/Seo";
-import { AUTOR_ID, ORG_ID, SITE_URL } from "@/seo/entities";
+import { AUTOR_ID, MIGUEL_ID, ORG_ID, SITE_URL } from "@/seo/entities";
 import { buildBreadcrumbJsonLd } from "@/seo/breadcrumbJsonLd";
 import {
   Breadcrumb,
@@ -12,14 +12,35 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ABOGADOS, telLink, waLink } from "@/lib/contacto";
 
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "@id": AUTOR_ID,
-  name: "Michelle Alvarez Villalón",
+  name: "Michelle Álvarez Villalón",
   url: `${SITE_URL}/quienes-somos`,
   jobTitle: "Abogada de Familia",
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Universidad Andrés Bello",
+  },
+  worksFor: {
+    "@type": "LegalService",
+    "@id": ORG_ID,
+    name: "Acuérdalo",
+    url: SITE_URL,
+  },
+};
+
+const miguelJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": MIGUEL_ID,
+  name: "Miguel Reyes Rojas",
+  url: `${SITE_URL}/quienes-somos`,
+  jobTitle: "Abogado",
+  email: "miguelreyes@acuerdalo.cl",
   alumniOf: {
     "@type": "CollegeOrUniversity",
     name: "Universidad Andrés Bello",
@@ -42,8 +63,8 @@ const QuienesSomos = () => {
     <main className="min-h-screen bg-background font-outfit">
       <Seo
         title="Quiénes somos | Acuérdalo"
-        description="Conoce a Michelle Alvarez Villalón, Abogada de Familia de la Universidad Andrés Bello, y el enfoque de Acuérdalo en derecho de familia en Chile."
-        jsonLd={[personJsonLd, breadcrumbJsonLd]}
+        description="Conoce a Miguel Reyes Rojas y Michelle Álvarez Villalón, abogados de la Universidad Andrés Bello, y el enfoque de Acuérdalo, estudio jurídico online en Chile."
+        jsonLd={[personJsonLd, miguelJsonLd, breadcrumbJsonLd]}
       />
       <Navbar />
       <div className="pt-16">
@@ -69,17 +90,31 @@ const QuienesSomos = () => {
               Quiénes somos
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mt-4">
-              Acuérdalo nació para hacer más simple y humano el derecho de familia en Chile:
-              pensión de alimentos, divorcio, cuidado personal y medidas de protección, resueltos
+              Acuérdalo, estudio jurídico, nació para hacer más simple y humano el acceso a la
+              justicia en Chile: laboral, familia, civil, tributario y trámites extrajudiciales,
               100% online.
             </p>
           </div>
         </header>
 
         <section className="max-w-5xl mx-auto px-6 py-12">
+          <article className="rounded-2xl border border-border bg-card p-6 md:p-8 mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">
+              Miguel Reyes Rojas
+            </h2>
+            <p className="text-sm font-medium text-primary mb-4">
+              Abogado · Universidad Andrés Bello
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              Miguel es abogado de la Universidad Andrés Bello y parte del equipo de Acuérdalo,
+              estudio jurídico que atiende casos laborales, de familia, civiles y tributarios,
+              además de trámites extrajudiciales, 100% online en todo Chile.
+            </p>
+          </article>
+
           <article className="rounded-2xl border border-border bg-card p-6 md:p-8">
             <h2 className="text-2xl font-semibold text-foreground mb-2">
-              Michelle Alvarez Villalón
+              Michelle Álvarez Villalón
             </h2>
             <p className="text-sm font-medium text-primary mb-4">
               Abogada de Familia · Universidad Andrés Bello
@@ -106,13 +141,26 @@ const QuienesSomos = () => {
               inicial, sin salir de tu casa.
             </p>
             <a
-              href="https://wa.me/56990538001?text=Hola,%20necesito%20orientación%20legal"
+              href={waLink("Hola, necesito orientación legal")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Hablar por WhatsApp
             </a>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 text-sm">
+              {ABOGADOS.map((abogado) => (
+                <div key={abogado.email}>
+                  <p className="font-semibold text-foreground">{abogado.nombre}</p>
+                  <a href={telLink(abogado.telefono)} className="block text-muted-foreground hover:text-primary transition-colors">
+                    {abogado.telefono}
+                  </a>
+                  <a href={`mailto:${abogado.email}`} className="block text-muted-foreground hover:text-primary transition-colors">
+                    {abogado.email}
+                  </a>
+                </div>
+              ))}
+            </div>
           </article>
         </section>
 

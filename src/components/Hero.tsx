@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Calendar } from "lucide-react";
+import { waLink } from "@/lib/contacto";
 
 const Hero = () => {
   const openWhatsApp = () => {
-    window.open("https://wa.me/56990538001?text=Hola,%20necesito%20asesoría%20legal", "_blank");
+    window.open(waLink("Hola, necesito asesoría legal"), "_blank");
   };
 
   const scrollToContact = () => {
@@ -24,18 +25,18 @@ const Hero = () => {
           </span>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
-            Abogado de familia en Chile:{" "}
+            Asesoría jurídica con{" "}
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              Acuérdalo
+              trato humano
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 font-light max-w-2xl mx-auto">
-            Resolvemos tu caso rápido y con trato humano
+            Acuérdalo, estudio jurídico. Resolvemos tu caso rápido, sin que salgas de tu casa.
           </p>
           
           <p className="text-lg text-muted-foreground/80 mb-10 max-w-xl mx-auto font-light">
-            Pensiones, visitas, divorcios y más. Sin salir de tu casa.
+            Laboral, familia, civil, tributario y trámites extrajudiciales.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

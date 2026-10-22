@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send } from "lucide-react";
+import { Mail, MessageCircle, Phone, Send } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ABOGADOS, telLink, waLink } from "@/lib/contacto";
 
 const formSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").max(100, "El nombre es muy largo"),
@@ -81,7 +82,7 @@ const FinalCTA = () => {
   };
 
   const openWhatsApp = () => {
-    window.open("https://wa.me/56990538001?text=Hola,%20necesito%20asesoría%20legal", "_blank");
+    window.open(waLink("Hola, necesito asesoría legal"), "_blank");
   };
 
   return (
@@ -131,6 +132,41 @@ const FinalCTA = () => {
               </Button>
               <p className="text-sm text-muted-foreground mt-4">
                 Lunes a Viernes, 9:00 - 18:00
+              </p>
+              <div className="mt-6 pt-6 border-t border-border grid gap-5 sm:grid-cols-2 text-left">
+                {ABOGADOS.map((abogado) => (
+                  <div key={abogado.email}>
+                    <p className="text-sm font-semibold text-foreground mb-2">{abogado.nombre}</p>
+                    <ul className="space-y-1.5 text-sm">
+                      <li>
+                        <a href={telLink(abogado.telefono)} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                          <Phone className="h-4 w-4 shrink-0" />
+                          {abogado.telefono}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href={`https://wa.me/${abogado.wa}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          <MessageCircle className="h-4 w-4 shrink-0" />
+                          WhatsApp
+                        </a>
+                      </li>
+                      <li>
+                        <a href={`mailto:${abogado.email}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors break-all">
+                          <Mail className="h-4 w-4 shrink-0" />
+                          {abogado.email}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground mt-6">
+                Respondemos en menos de 24 horas · Atención 100% online en todo Chile
               </p>
             </div>
           </motion.div>

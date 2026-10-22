@@ -2,10 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Sparkles, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { waLink } from "@/lib/contacto";
 
 const API_URL = "https://api.acuerdalo.cl/api/asistente";
-
-const WHATSAPP_BASE = "https://wa.me/56990538001?text=";
 
 interface Turno {
   rol: "usuario" | "asistente";
@@ -39,15 +38,15 @@ const CONTENIDO: Record<
   { titulo: string; intro: string; sugerencias: string[]; whatsapp: string }
 > = {
   general: {
-    titulo: "Pregunta sobre tu caso de familia",
+    titulo: "Pregunta sobre tu caso",
     intro:
-      "Orientación inmediata sobre pensión de alimentos, divorcio, cuidado personal y medidas de protección en Chile.",
+      "Orientación inmediata sobre tu caso laboral, de familia, civil o tributario en Chile.",
     sugerencias: [
       "¿Cómo se calcula la pensión de alimentos?",
       "¿Cuánto tarda un divorcio en Chile?",
       "¿Cómo se fija un régimen de visitas?",
     ],
-    whatsapp: "Hola, tengo una consulta de derecho de familia.",
+    whatsapp: "Hola, tengo una consulta legal.",
   },
   calculadora: {
     titulo: "¿Dudas antes de calcular?",
@@ -129,7 +128,7 @@ const AsistenteLegal = ({
       ? "calculadora-con-resultado"
       : tema;
   const { titulo, intro, sugerencias, whatsapp } = CONTENIDO[temaEfectivo];
-  const whatsappUrl = WHATSAPP_BASE + encodeURIComponent(whatsapp);
+  const whatsappUrl = waLink(whatsapp);
 
   const [turnos, setTurnos] = useState<Turno[]>([]);
   const [pregunta, setPregunta] = useState("");

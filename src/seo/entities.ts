@@ -10,6 +10,7 @@ export const SITE_URL = "https://acuerdalo.cl";
 
 export const ORG_ID = `${SITE_URL}/#organizacion`;
 export const AUTOR_ID = `${SITE_URL}/quienes-somos#michelle-alvarez`;
+export const MIGUEL_ID = `${SITE_URL}/quienes-somos#miguel-reyes`;
 
 /** Referencia ligera a la organización, para `publisher`. */
 export const orgRef = { "@id": ORG_ID };

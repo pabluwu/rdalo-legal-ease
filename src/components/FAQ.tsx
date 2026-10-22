@@ -247,7 +247,7 @@ const FAQ = () => {
             Preguntas Frecuentes
           </h2>
           <p className="text-lg text-muted-foreground font-light">
-            Resolvemos tus dudas más comunes
+            Resolvemos tus dudas más comunes sobre nuestros servicios jurídicos
           </p>
         </motion.div>
 

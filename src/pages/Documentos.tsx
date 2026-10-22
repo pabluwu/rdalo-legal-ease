@@ -4,6 +4,7 @@ import { ArrowLeft, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Footer from "@/components/Footer";
+import { waLink } from "@/lib/contacto";
 
 const documentSections = [
   {
@@ -152,7 +153,7 @@ const Documentos = () => {
                 Escríbenos y te orientamos según tu caso específico
               </p>
               <Button 
-                onClick={() => window.open("https://wa.me/56990538001?text=Hola,%20necesito%20saber%20qué%20documentos%20necesito", "_blank")}
+                onClick={() => window.open(waLink("Hola, necesito saber qué documentos necesito"), "_blank")}
                 size="lg" 
                 className="bg-[#25D366] hover:bg-[#128C7E] text-white shadow-lg rounded-full px-8 py-6 text-lg font-medium transition-all hover:scale-105"
               >
